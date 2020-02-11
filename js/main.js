@@ -14,10 +14,22 @@ var getRandomInt = function (min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+};
+
+var getRandomArrayItem = function (array) {
+  return array[getRandomInt(0, array.length - 1)];
+};
+
+var clipArray = function (array) {
+  return array.slice(0, getRandomInt(1, array.length));
+};
 
 var generateAdvert = function (index) {
-  var advert = {author: {}, offer: {}, location: {}};
+  var advert = {
+    author: {},
+    offer: {},
+    location: {}
+  };
 
   advert.author.avatar = 'img/avatars/user0' + index + '.png';
 
@@ -27,17 +39,17 @@ var generateAdvert = function (index) {
   advert.offer.title = 'Заголовок объявления';
   advert.offer.address = advert.location.x + ', ' + advert.location.y;
   advert.offer.price = '';
-  advert.offer.type = '';
-  advert.offer.rooms = '';
-  advert.offer.guests = '';
-  advert.offer.checkin = '';
-  advert.offer.checkout = '';
+  advert.offer.type = getRandomArrayItem(types);
+  advert.offer.rooms = getRandomArrayItem(rooms);
+  advert.offer.guests = getRandomArrayItem(guests);
+  advert.offer.checkin = getRandomArrayItem(times);
+  advert.offer.checkout = getRandomArrayItem(times);
   advert.offer.features = '';
   advert.offer.description = 'Описание объявления';
-  advert.offer.photos = '';
+  advert.offer.photos = clipArray(photos);
 
   return advert
-}
+};
 
 var randomAdvert = generateAdvert(1);
 
