@@ -94,6 +94,8 @@ var generateAdvertsArray = function (number) {
   return adverts;
 };
 
+var advertsArray = generateAdvertsArray(NUMBER_OF_ADVERTS);
+
 // создаем и вставляем фрагмент
 var renderPin = function (advert) {
   var pinTemplate = document.querySelector('#pin').content;
@@ -124,7 +126,7 @@ var renderAdvertCard = function (advert) {
   return advertCard;
 }
 
-map.insertBefore(renderAdvertCard(generateAdvertsArray[0]), filtersContainer);
-pinsBlock.appendChild(createPinsBlock(generateAdvertsArray(NUMBER_OF_ADVERTS)));
+pinsBlock.appendChild(createPinsBlock(advertsArray));
+map.insertBefore(renderAdvertCard(advertsArray[0]), filtersContainer);
 
 map.classList.remove('map--faded');
