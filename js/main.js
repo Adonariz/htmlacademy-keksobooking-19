@@ -17,7 +17,7 @@ var LOCATION_X_MIN = 25;
 
 var map = document.querySelector('.map');
 var pinsBlock = map.querySelector('.map__pins');
-var pinTemplate = document.querySelector('#pin').content;
+var filtersContainer = map.querySelector('.map__filters-container');
 
 var locationXMax = map.offsetWidth - 25;
 
@@ -60,11 +60,6 @@ var generateAdvert = function (index) {
       avatar: 'img/avatars/user0' + (index + 1) + '.png'
     },
 
-    location: {
-      x: getRandomInt(LOCATION_X_MIN, locationXMax),
-      y: getRandomInt(LOCATION_Y_MIN, LOCATION_Y_MAX)
-    },
-
     offer: {
       title: 'Заголовок объявления',
       address: location.x + ', ' + location.y,
@@ -77,6 +72,11 @@ var generateAdvert = function (index) {
       features: clipArray(shuffleArray(FEAUTURES)),
       description: 'Описание объявления',
       photos: clipArray(PHOTOS)
+    },
+
+    location: {
+      x: getRandomInt(LOCATION_X_MIN, locationXMax),
+      y: getRandomInt(LOCATION_Y_MIN, LOCATION_Y_MAX)
     }
   };
 
@@ -94,8 +94,9 @@ var generateAdvertsArray = function (number) {
   return adverts;
 };
 
-// создаем фрагмент
+// создаем и вставляем фрагмент
 var renderPin = function (advert) {
+  var pinTemplate = document.querySelector('#pin').content;
   var pin = pinTemplate.querySelector('.map__pin').cloneNode(true);
 
   pin.querySelector('img').src = advert.author.avatar;
@@ -105,7 +106,6 @@ var renderPin = function (advert) {
 
   return pin;
 };
-
 
 var createPinsBlock = function (array) {
   var fragment = document.createDocumentFragment();
@@ -117,6 +117,14 @@ var createPinsBlock = function (array) {
   return fragment;
 };
 
+var renderAdvertCard = function (advert) {
+  var advertCardTemplate = document.querySelector('#card').content;
+  var advertCard = advertCardTemplate.querySelector('.map__card').cloneNode(true);
+
+  return advertCard;
+}
+
+map.insertBefore(renderAdvertCard(generateAdvertsArray[0]), filtersContainer);
 pinsBlock.appendChild(createPinsBlock(generateAdvertsArray(NUMBER_OF_ADVERTS)));
 
 map.classList.remove('map--faded');
