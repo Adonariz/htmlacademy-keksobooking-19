@@ -1,20 +1,24 @@
 'use strict';
 
-var map = document.querySelector('.map');
-var pinsBlock = map.querySelector('.map__pins');
-var pinTemplate = document.querySelector('#pin').content;
 var NUMBER_OF_ADVERTS = 8;
-
-var times = ['12:00', '13:00', '14:00'];
-var types = ['palace', 'flat', 'house', 'bungalo'];
-var features = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-var photos = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-var rooms = [1, 2, 3];
-var guests = [0, 1, 2];
-var prices = [1000, 2000, 3000, 4000, 5000];
+var TIMES = ['12:00', '13:00', '14:00'];
+var TYPES = ['palace', 'flat', 'house', 'bungalo'];
+var FEAUTURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+var ROOMS_MIN = 1;
+var ROOMS_MAX = 3;
+var GUESTS_MIN = 0;
+var GUESTS_MAX = 2;
+var PRICE_MIN = 0;
+var PRICE_MAX = 10000;
 var LOCATION_Y_MIN = 130;
 var LOCATION_Y_MAX = 630;
 var LOCATION_X_MIN = 25;
+
+var map = document.querySelector('.map');
+var pinsBlock = map.querySelector('.map__pins');
+var pinTemplate = document.querySelector('#pin').content;
+
 var locationXMax = map.offsetWidth - 25;
 
 // генерируем случайное целое число
@@ -52,27 +56,29 @@ var shuffleArray = function (array) {
 // создаем объявление
 var generateAdvert = function (index) {
   var advert = {
-    author: {},
-    offer: {},
-    location: {}
+    author: {
+      avatar: 'img/avatars/user0' + (index + 1) + '.png'
+    },
+
+    location: {
+      x: getRandomInt(LOCATION_X_MIN, locationXMax),
+      y: getRandomInt(LOCATION_Y_MIN, LOCATION_Y_MAX)
+    },
+
+    offer: {
+      title: 'Заголовок объявления',
+      address: location.x + ', ' + location.y,
+      price: getRandomInt(PRICE_MIN, PRICE_MAX),
+      type: getRandomArrayItem(TYPES),
+      rooms: getRandomInt(ROOMS_MIN, ROOMS_MAX),
+      guests: getRandomInt(GUESTS_MIN, GUESTS_MAX),
+      checkin: getRandomArrayItem(TIMES),
+      checkout: getRandomArrayItem(TIMES),
+      features: clipArray(shuffleArray(FEAUTURES)),
+      description: 'Описание объявления',
+      photos: clipArray(PHOTOS)
+    }
   };
-
-  advert.author.avatar = 'img/avatars/user0' + (index + 1) + '.png';
-
-  advert.location.x = getRandomInt(LOCATION_X_MIN, locationXMax);
-  advert.location.y = getRandomInt(LOCATION_Y_MIN, LOCATION_Y_MAX);
-
-  advert.offer.title = 'Заголовок объявления';
-  advert.offer.address = advert.location.x + ', ' + advert.location.y;
-  advert.offer.price = getRandomArrayItem(prices);
-  advert.offer.type = getRandomArrayItem(types);
-  advert.offer.rooms = getRandomArrayItem(rooms);
-  advert.offer.guests = getRandomArrayItem(guests);
-  advert.offer.checkin = getRandomArrayItem(times);
-  advert.offer.checkout = getRandomArrayItem(times);
-  advert.offer.features = clipArray(shuffleArray(features));
-  advert.offer.description = 'Описание объявления';
-  advert.offer.photos = clipArray(photos);
 
   return advert;
 };
