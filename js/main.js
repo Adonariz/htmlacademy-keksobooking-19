@@ -16,6 +16,8 @@ var LOCATION_Y_MAX = 630;
 var LOCATION_X_MIN = 25;
 var MOUSE_LB = 0;
 var ENTER_KEY = 'Enter';
+var PIN_WIDTH = 50;
+var PIN_HEIGHT = 70;
 
 var map = document.querySelector('.map');
 var pinsBlock = map.querySelector('.map__pins');
@@ -247,7 +249,12 @@ var onPinMainKeydown = function (evt) {
   }
 };
 
+var fillAddress = function () {
+  advertForm.querySelector('#address').value = (pinMain.offsetLeft + Math.floor(PIN_WIDTH / 2)) + ', ' + (pinMain.offsetTop + PIN_HEIGHT);
+};
+
 deactivatePage();
+fillAddress();
 
 pinMain.addEventListener('mousedown', onPinMainMousedown);
 pinMain.addEventListener('keydown', onPinMainKeydown);
