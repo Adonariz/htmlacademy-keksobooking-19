@@ -14,12 +14,19 @@ var PRICE_MAX = 10000;
 var LOCATION_Y_MIN = 130;
 var LOCATION_Y_MAX = 630;
 var LOCATION_X_MIN = 25;
+var MOUSE_LB = 0;
+var ENTER_KEY = 'Enter';
 
 var map = document.querySelector('.map');
 var pinsBlock = map.querySelector('.map__pins');
+var pinMain = map.querySelector('.map__pin--main');
+var advertForm = document.querySelector('.ad-form');
+var advertFormFieldsets = advertForm.querySelectorAll('fieldset');
 var filtersContainer = map.querySelector('.map__filters-container');
+var mapFilters = filtersContainer.querySelectorAll('.map__filter');
+var mapFeatures = filtersContainer.querySelectorAll('.map__features');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-var advertCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+// var advertCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
 var locationXMax = map.offsetWidth - 25;
 
@@ -108,6 +115,7 @@ var createPinsBlock = function (array) {
   return fragment;
 };
 
+/*
 // создаем карточку объявления
 var renderAdvertCard = function (advert) {
   var advertCard = advertCardTemplate.cloneNode(true);
@@ -190,7 +198,56 @@ var renderAdvertCard = function (advert) {
   return advertCard;
 };
 
-pinsBlock.appendChild(createPinsBlock(advertsArray));
 map.insertBefore(renderAdvertCard(advertsArray[0]), filtersContainer);
+*/
 
-map.classList.remove('map--faded');
+// активация карты и формы
+
+var disableInputs = function (inputsArray) {
+  for (var i = 0; i < inputsArray.length; i++) {
+    inputsArray[i].setAttribute('disabled', 'true');
+  }
+};
+
+var enableInputs = function (inputsArray) {
+  for (var i = 0; i < inputsArray.length; i++) {
+    inputsArray[i].removeAttribute('disabled');
+  }
+};
+
+var deactivatePage = function () {
+  disableInputs(advertFormFieldsets);
+  disableInputs(mapFilters);
+  disableInputs(mapFeatures);
+
+};
+
+var activatePage = function () {
+  map.classList.remove('map--faded');
+  pinsBlock.appendChild(createPinsBlock(advertsArray));
+  advertForm.classList.remove('ad-form--disabled');
+  enableInputs(advertFormFieldsets);
+  enableInputs(mapFilters);
+  enableInputs(mapFeatures);
+};
+
+var onPinMainMousedown = function (evt) {
+  if (evt.button === MOUSE_LB) {
+    activatePage();
+    pinMain.removeEventListener('mousedown', onPinMainMousedown);
+    pinMain.removeEventListener('keydown', onPinMainKeydown);
+  }
+};
+
+var onPinMainKeydown = function (evt) {
+  if (evt.key === ENTER_KEY) {
+    activatePage();
+    pinMain.removeEventListener('mousedown', onPinMainMousedown);
+    pinMain.removeEventListener('keydown', onPinMainKeydown);
+  }
+};
+
+deactivatePage();
+
+pinMain.addEventListener('mousedown', onPinMainMousedown);
+pinMain.addEventListener('keydown', onPinMainKeydown);
