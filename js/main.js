@@ -29,6 +29,8 @@ var mapFilters = filtersContainer.querySelectorAll('.map__filter');
 var mapFeatures = filtersContainer.querySelectorAll('.map__features');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 // var advertCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+var advertRoomNumber = advertForm.querySelector('#room_number');
+var advertGuestNumber = advertForm.querySelector('#capacity');
 
 var locationXMax = map.offsetWidth - 25;
 
@@ -231,6 +233,7 @@ var activatePage = function () {
   enableInputs(advertFormFieldsets);
   enableInputs(mapFilters);
   enableInputs(mapFeatures);
+  advertGuestNumber.value = 1;
 };
 
 var onPinMainMousedown = function (evt) {
@@ -253,8 +256,22 @@ var fillAddress = function () {
   advertForm.querySelector('#address').value = (pinMain.offsetLeft + Math.floor(PIN_WIDTH / 2)) + ', ' + (pinMain.offsetTop + PIN_HEIGHT);
 };
 
+var onRoomCapacityChange = function () {
+  advertGuestNumber.setCustomValidity('');
+
+  if (advertRoomNumber.value < advertGuestNumber.value) {
+    advertGuestNumber.setCustomValidity('Все не уместятся! Выбери жилье повместительнее!');
+  }
+
+  if (advertRoomNumber.value === '100' && advertGuestNumber.value !== '0') {
+    advertGuestNumber.setCustomValidity('Здесь лишним гостям не будут рады');
+  }
+};
+
 deactivatePage();
 fillAddress();
 
 pinMain.addEventListener('mousedown', onPinMainMousedown);
 pinMain.addEventListener('keydown', onPinMainKeydown);
+advertRoomNumber.addEventListener('change', onRoomCapacityChange);
+advertGuestNumber.addEventListener('change', onRoomCapacityChange);
