@@ -31,6 +31,10 @@ var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pi
 // var advertCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 var advertRoomNumber = advertForm.querySelector('#room_number');
 var advertGuestNumber = advertForm.querySelector('#capacity');
+var advertRoomType = advertForm.querySelector('#type');
+var advertPrice = advertForm.querySelector('#price');
+var advertCheckInTime = advertForm.querySelector('#timein');
+var advertCheckOutTime = advertForm.querySelector('#timeout');
 
 var locationXMax = map.offsetWidth - 25;
 
@@ -234,6 +238,7 @@ var activatePage = function () {
   enableInputs(mapFilters);
   enableInputs(mapFeatures);
   advertGuestNumber.value = 1;
+  advertPrice.placeholder = 1000;
 };
 
 var onPinMainMousedown = function (evt) {
@@ -268,6 +273,38 @@ var onRoomCapacityChange = function () {
   }
 };
 
+var onRoomTypeChange = function () {
+  switch (advertRoomType.value) {
+    case 'bungalo':
+      advertPrice.setAttribute('min', 0);
+      advertPrice.placeholder = 0;
+      break;
+
+    case 'flat':
+      advertPrice.setAttribute('min', 1000);
+      advertPrice.placeholder = 1000;
+      break;
+
+    case 'house':
+      advertPrice.setAttribute('min', 5000);
+      advertPrice.placeholder = 5000;
+      break;
+
+    case 'palace':
+      advertPrice.setAttribute('min', 10000);
+      advertPrice.placeholder = 10000;
+      break;
+  }
+};
+
+var onCheckInTimeChange = function () {
+  advertCheckOutTime.value = advertCheckInTime.value;
+};
+
+var onCheckOutTimeChange = function () {
+  advertCheckInTime.value = advertCheckOutTime.value;
+}
+
 deactivatePage();
 fillAddress();
 
@@ -275,3 +312,6 @@ pinMain.addEventListener('mousedown', onPinMainMousedown);
 pinMain.addEventListener('keydown', onPinMainKeydown);
 advertRoomNumber.addEventListener('change', onRoomCapacityChange);
 advertGuestNumber.addEventListener('change', onRoomCapacityChange);
+advertRoomType.addEventListener('change', onRoomTypeChange);
+advertCheckInTime.addEventListener('change', onCheckInTimeChange);
+advertCheckOutTime.addEventListener('change', onCheckOutTimeChange);
