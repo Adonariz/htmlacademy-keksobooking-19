@@ -16,6 +16,7 @@ var LOCATION_Y_MAX = 630;
 var LOCATION_X_MIN = 25;
 var MOUSE_LB = 0;
 var ENTER_KEY = 'Enter';
+var ESC_KEY = 'Escape';
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
 
@@ -28,7 +29,7 @@ var filtersContainer = map.querySelector('.map__filters-container');
 var mapFilters = filtersContainer.querySelectorAll('.map__filter');
 var mapFeatures = filtersContainer.querySelectorAll('.map__features');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-var popupCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+var popupCardTemplate = document.querySelector('#card').content.querySelector('.popup');
 var advertRoomNumber = advertForm.querySelector('#room_number');
 var advertGuestNumber = advertForm.querySelector('#capacity');
 var advertRoomType = advertForm.querySelector('#type');
@@ -205,19 +206,43 @@ var renderPopupCard = function (advert) {
   return popupCard;
 };
 
-map.insertBefore(renderPopupCard(advertsArray[0]), filtersContainer);
+// отображение карточки при нажатии на метку
+var popupCardHandler = function () {
+  var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+  pins.forEach(function (element, index) {
+    element.addEventListener('click', function () {
+      var isElement = document.querySelector('.map__card');
+      if (isElement) {
+        isElement.remove();
+      }
+      map.insertBefore(renderPopupCard(advertsArray[index]), filtersContainer);
+      popupShown();
+    });
+  });
+};
+
+// закрытие карточки
+var popupShown = function () {
+  var popup = document.querySelector('.map__card');
+  var popupClose = popup.querySelector('.popup__close');
+
+  popupClose.addEventListener('click', function () {
+    popup.remove();
+  }, {once: true});
+
+  document.addEventListener('keydown', function (evt) {
+    if (evt.key === ESC_KEY) {
+      popup.remove();
+    }
+  }, {once: true});
+};
 
 // активация карты и формы
 
+// отключаем инпуты
 var disableInputs = function (inputsArray) {
   for (var i = 0; i < inputsArray.length; i++) {
     inputsArray[i].setAttribute('disabled', 'true');
-  }
-};
-
-var enableInputs = function (inputsArray) {
-  for (var i = 0; i < inputsArray.length; i++) {
-    inputsArray[i].removeAttribute('disabled');
   }
 };
 
@@ -225,13 +250,21 @@ var deactivatePage = function () {
   disableInputs(advertFormFieldsets);
   disableInputs(mapFilters);
   disableInputs(mapFeatures);
-
 };
 
+// включаем инпуты
+var enableInputs = function (inputsArray) {
+  for (var i = 0; i < inputsArray.length; i++) {
+    inputsArray[i].removeAttribute('disabled');
+  }
+};
+
+// активируем страницу
 var activatePage = function () {
   map.classList.remove('map--faded');
-  pinsBlock.appendChild(createPinsBlock(advertsArray));
   advertForm.classList.remove('ad-form--disabled');
+  pinsBlock.appendChild(createPinsBlock(advertsArray));
+  popupCardHandler();
   enableInputs(advertFormFieldsets);
   enableInputs(mapFilters);
   enableInputs(mapFeatures);
@@ -255,10 +288,13 @@ var onPinMainKeydown = function (evt) {
   }
 };
 
+// валидация формы
+// заполнение адреса
 var fillAddress = function () {
   advertForm.querySelector('#address').value = (pinMain.offsetLeft + Math.floor(PIN_WIDTH / 2)) + ', ' + (pinMain.offsetTop + PIN_HEIGHT);
 };
 
+// сочетание гостей и спальных мест
 var onRoomCapacityChange = function () {
   advertGuestNumber.setCustomValidity('');
 
@@ -271,6 +307,7 @@ var onRoomCapacityChange = function () {
   }
 };
 
+// минимальная стоимость от типа жилья
 var onRoomTypeChange = function () {
   switch (advertRoomType.value) {
     case 'bungalo':
@@ -295,6 +332,7 @@ var onRoomTypeChange = function () {
   }
 };
 
+// синхронизация времени
 var onCheckInTimeChange = function () {
   advertCheckOutTime.value = advertCheckInTime.value;
 };
@@ -303,9 +341,11 @@ var onCheckOutTimeChange = function () {
   advertCheckInTime.value = advertCheckOutTime.value;
 };
 
+// неактивная страница
 deactivatePage();
 fillAddress();
 
+// добавляем обработчики
 pinMain.addEventListener('mousedown', onPinMainMousedown);
 pinMain.addEventListener('keydown', onPinMainKeydown);
 advertRoomNumber.addEventListener('change', onRoomCapacityChange);
