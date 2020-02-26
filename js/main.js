@@ -3,7 +3,7 @@
 var NUMBER_OF_ADVERTS = 8;
 var TIMES = ['12:00', '13:00', '14:00'];
 var TYPES = ['palace', 'flat', 'house', 'bungalo'];
-var FEAUTURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 var ROOMS_MIN = 1;
 var ROOMS_MAX = 3;
@@ -13,7 +13,6 @@ var PRICE_MIN = 0;
 var PRICE_MAX = 10000;
 var LOCATION_Y_MIN = 130;
 var LOCATION_Y_MAX = 630;
-var LOCATION_X_MIN = 25;
 var MOUSE_LB = 0;
 var ENTER_KEY = 'Enter';
 var ESC_KEY = 'Escape';
@@ -37,7 +36,8 @@ var advertPrice = advertForm.querySelector('#price');
 var advertCheckInTime = advertForm.querySelector('#timein');
 var advertCheckOutTime = advertForm.querySelector('#timeout');
 
-var locationXMax = map.offsetWidth - 25;
+var locationXMin = PIN_WIDTH / 2;
+var locationXMax = map.offsetWidth - PIN_WIDTH / 2;
 
 // генерируем случайное целое число
 var getRandomInt = function (min, max) {
@@ -58,7 +58,7 @@ var clipArray = function (array) {
 
 // создаем объявление
 var generateAdvert = function (index) {
-  var locationX = getRandomInt(LOCATION_X_MIN, locationXMax);
+  var locationX = getRandomInt(locationXMin, locationXMax);
   var locationY = getRandomInt(LOCATION_Y_MIN, LOCATION_Y_MAX);
 
   var advert = {
@@ -75,7 +75,7 @@ var generateAdvert = function (index) {
       guests: getRandomInt(GUESTS_MIN, GUESTS_MAX),
       checkin: getRandomArrayItem(TIMES),
       checkout: getRandomArrayItem(TIMES),
-      features: clipArray(FEAUTURES),
+      features: clipArray(FEATURES),
       description: 'Описание объявления',
       photos: clipArray(PHOTOS)
     },
@@ -105,9 +105,10 @@ var advertsArray = generateAdvertsArray(NUMBER_OF_ADVERTS);
 // создаем и вставляем фрагмент
 var renderPin = function (advert) {
   var pin = pinTemplate.cloneNode(true);
+  var pinImg = pin.querySelector('img');
 
-  pin.querySelector('img').src = advert.author.avatar;
-  pin.querySelector('img').alt = advert.offer.title;
+  pinImg.src = advert.author.avatar;
+  pinImg.alt = advert.offer.title;
   pin.style.left = (advert.location.x - 25) + 'px';
   pin.style.top = (advert.location.y - 70) + 'px';
 
@@ -207,7 +208,7 @@ var renderPopupCard = function (advert) {
 };
 
 // отображение карточки при нажатии на метку
-var popupCardHandler = function () {
+var addPopupCard = function () {
   var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
   pins.forEach(function (element, index) {
     element.addEventListener('click', function () {
@@ -216,13 +217,13 @@ var popupCardHandler = function () {
         isElement.remove();
       }
       map.insertBefore(renderPopupCard(advertsArray[index]), filtersContainer);
-      popupShown();
+      closePopup();
     });
   });
 };
 
 // закрытие карточки
-var popupShown = function () {
+var closePopup = function () {
   var popup = document.querySelector('.map__card');
   var popupClose = popup.querySelector('.popup__close');
 
@@ -264,7 +265,7 @@ var activatePage = function () {
   map.classList.remove('map--faded');
   advertForm.classList.remove('ad-form--disabled');
   pinsBlock.appendChild(createPinsBlock(advertsArray));
-  popupCardHandler();
+  addPopupCard();
   enableInputs(advertFormFieldsets);
   enableInputs(mapFilters);
   enableInputs(mapFeatures);
