@@ -125,6 +125,25 @@ var createPinsBlock = function (array) {
   return fragment;
 };
 
+// склонение числительных (numeralize-ru)
+var pluralize = function (count, one, two, five) {
+  count = Math.floor(Math.abs(count)) % 100;
+  if (count > 10 && count < 20) {
+    return five;
+  }
+
+  count = count % 10;
+  if (count === 1) {
+    return one;
+  }
+
+  if (count >= 2 && count <= 4) {
+    return two;
+  }
+
+  return five;
+};
+
 // создаем карточку объявления
 var renderPopupCard = function (advert) {
   var сard = popupCardTemplate.cloneNode(true);
