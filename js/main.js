@@ -144,6 +144,11 @@ var pluralize = function (count, one, two, five) {
   return five;
 };
 
+function declOfNum(number, titles) {
+  var cases = [2, 0, 1, 1, 1, 2];
+  return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
+}
+
 // создаем карточку объявления
 var renderPopupCard = function (advert) {
   var сard = popupCardTemplate.cloneNode(true);
