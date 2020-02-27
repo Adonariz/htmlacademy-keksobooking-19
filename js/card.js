@@ -13,8 +13,8 @@
       var type = сard.querySelector('.popup__type');
       var capacity = сard.querySelector('.popup__text--capacity');
       var time = сard.querySelector('.popup__text--time');
-      var features = сard.querySelector('.popup__features');
-      var feature = сard.querySelectorAll('.popup__feature');
+      var featuresBlock = сard.querySelector('.popup__features');
+      var features = сard.querySelectorAll('.popup__feature');
       var description = сard.querySelector('.popup__description');
       var photos = сard.querySelector('.popup__photos');
       var photo = photos.querySelector('.popup__photo');
@@ -37,7 +37,7 @@
 
       // удаляем ненужные фичи из шаблона
       for (var i = features.length - 1; i >= advert.offer.features.length; i--) {
-        features.removeChild(feature[i]);
+        featuresBlock.removeChild(features[i]);
       }
 
       description.textContent = advert.offer.description;
