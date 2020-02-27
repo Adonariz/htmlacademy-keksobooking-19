@@ -22,7 +22,7 @@ var PIN_HEIGHT = 70;
 
 var map = document.querySelector('.map');
 var pinsBlock = map.querySelector('.map__pins');
-var mainPin = map.querySelector('.map__pin--main');
+var pinMain = map.querySelector('.map__pin--main');
 var advertForm = document.querySelector('.ad-form');
 var advertFormFieldsets = advertForm.querySelectorAll('fieldset');
 var filtersContainer = map.querySelector('.map__filters-container');
@@ -124,53 +124,29 @@ var createPinsBlock = function (array) {
   return fragment;
 };
 
-// склонение числительных (numeralize-ru)
-var pluralize = function (count, one, two, five) {
-  count = Math.floor(Math.abs(count)) % 100;
-  if (count > 10 && count < 20) {
-    return five;
-  }
-
-  count = count % 10;
-  if (count === 1) {
-    return one;
-  }
-
-  if (count >= 2 && count <= 4) {
-    return two;
-  }
-
-  return five;
-};
-
-function declOfNum(number, titles) {
-  var cases = [2, 0, 1, 1, 1, 2];
-  return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
-}
-
 // создаем карточку объявления
 var renderPopupCard = function (advert) {
-  var сard = popupCardTemplate.cloneNode(true);
-  var avatar = сard.querySelector('.popup__avatar');
-  var title = сard.querySelector('.popup__title');
-  var address = сard.querySelector('.popup__text--address');
-  var price = сard.querySelector('.popup__text--price');
-  var type = сard.querySelector('.popup__type');
-  var capacity = сard.querySelector('.popup__text--capacity');
-  var time = сard.querySelector('.popup__text--time');
-  var features = сard.querySelector('.popup__features');
-  var feature = сard.querySelectorAll('.popup__feature');
-  var description = сard.querySelector('.popup__description');
-  var photos = сard.querySelector('.popup__photos');
-  var photo = photos.querySelector('.popup__photo');
+  var popupCard = popupCardTemplate.cloneNode(true);
+  var popupAvatar = popupCard.querySelector('.popup__avatar');
+  var popupTitle = popupCard.querySelector('.popup__title');
+  var popupAddress = popupCard.querySelector('.popup__text--address');
+  var popupPrice = popupCard.querySelector('.popup__text--price');
+  var popupType = popupCard.querySelector('.popup__type');
+  var popupCapacity = popupCard.querySelector('.popup__text--capacity');
+  var popupTime = popupCard.querySelector('.popup__text--time');
+  var popupFeatures = popupCard.querySelector('.popup__features');
+  var popupFeature = popupCard.querySelectorAll('.popup__feature');
+  var popupDescription = popupCard.querySelector('.popup__description');
+  var popupPhotos = popupCard.querySelector('.popup__photos');
+  var popupPhoto = popupPhotos.querySelector('.popup__photo');
   var roomType = '';
   var roomText = 'комната';
   var guestText = 'гостя';
 
-  avatar.src = advert.author.avatar;
-  title.textContent = advert.offer.title;
-  address.textContent = advert.offer.address;
-  price.textContent = advert.offer.price + '₽/ночь';
+  popupAvatar.src = advert.author.avatar;
+  popupTitle.textContent = advert.offer.title;
+  popupAddress.textContent = advert.offer.address;
+  popupPrice.textContent = advert.offer.price + '₽/ночь';
 
   switch (advert.offer.type) {
     case 'palace':
@@ -190,7 +166,7 @@ var renderPopupCard = function (advert) {
       break;
   }
 
-  type.textContent = roomType;
+  popupType.textContent = roomType;
   // склоняем "комната"
   if (advert.offer.rooms > 1 && advert.offer.rooms < 5) {
     roomText = 'комнаты';
@@ -202,32 +178,32 @@ var renderPopupCard = function (advert) {
     guestText = 'гостей';
   }
 
-  capacity.textContent = advert.offer.rooms + ' ' + roomText + ' для ' + advert.offer.guests + ' ' + guestText;
+  popupCapacity.textContent = advert.offer.rooms + ' ' + roomText + ' для ' + advert.offer.guests + ' ' + guestText;
   // если выпадает 0 гостей
   if (advert.offer.guests === 0) {
-    capacity.textContent = advert.offer.rooms + ' ' + roomText + ' без гостей';
+    popupCapacity.textContent = advert.offer.rooms + ' ' + roomText + ' без гостей';
   }
 
-  time.textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
+  popupTime.textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
 
   // удаляем ненужные фичи из шаблона
-  for (var i = features.length - 1; i >= advert.offer.features.length; i--) {
-    features.removeChild(feature[i]);
+  for (var i = popupFeature.length - 1; i >= advert.offer.features.length; i--) {
+    popupFeatures.removeChild(popupFeature[i]);
   }
 
-  description.textContent = advert.offer.description;
-  photo.src = advert.offer.photos[0];
+  popupDescription.textContent = advert.offer.description;
+  popupPhoto.src = advert.offer.photos[0];
 
   // если больше одной фото
   if (advert.offer.photos.length > 1) {
     for (var j = 1; j < advert.offer.photos.length; j++) {
-      var newPopupPhoto = photo.cloneNode(false);
-      photos.appendChild(newPopupPhoto);
+      var newPopupPhoto = popupPhoto.cloneNode(false);
+      popupPhotos.appendChild(newPopupPhoto);
       newPopupPhoto.src = advert.offer.photos[j];
     }
   }
 
-  return сard;
+  return popupCard;
 };
 
 // отображение карточки при нажатии на метку
@@ -296,26 +272,26 @@ var activatePage = function () {
   advertPrice.placeholder = 1000;
 };
 
-var onMainPinMousedown = function (evt) {
+var onPinMainMousedown = function (evt) {
   if (evt.button === MOUSE_LB) {
     activatePage();
-    mainPin.removeEventListener('mousedown', onMainPinMousedown);
-    mainPin.removeEventListener('keydown', onMainPinKeydown);
+    pinMain.removeEventListener('mousedown', onPinMainMousedown);
+    pinMain.removeEventListener('keydown', onPinMainKeydown);
   }
 };
 
-var onMainPinKeydown = function (evt) {
+var onPinMainKeydown = function (evt) {
   if (evt.key === ENTER_KEY) {
     activatePage();
-    mainPin.removeEventListener('mousedown', onMainPinMousedown);
-    mainPin.removeEventListener('keydown', onMainPinKeydown);
+    pinMain.removeEventListener('mousedown', onPinMainMousedown);
+    pinMain.removeEventListener('keydown', onPinMainKeydown);
   }
 };
 
 // валидация формы
 // заполнение адреса
 var fillAddress = function () {
-  advertForm.querySelector('#address').value = (mainPin.offsetLeft + Math.floor(PIN_WIDTH / 2)) + ', ' + (mainPin.offsetTop + PIN_HEIGHT);
+  advertForm.querySelector('#address').value = (pinMain.offsetLeft + Math.floor(PIN_WIDTH / 2)) + ', ' + (pinMain.offsetTop + PIN_HEIGHT);
 };
 
 // сочетание гостей и спальных мест
@@ -370,8 +346,8 @@ deactivatePage();
 fillAddress();
 
 // добавляем обработчики
-mainPin.addEventListener('mousedown', onMainPinMousedown);
-mainPin.addEventListener('keydown', onMainPinKeydown);
+pinMain.addEventListener('mousedown', onPinMainMousedown);
+pinMain.addEventListener('keydown', onPinMainKeydown);
 advertRoomNumber.addEventListener('change', onRoomCapacityChange);
 advertGuestNumber.addEventListener('change', onRoomCapacityChange);
 advertRoomType.addEventListener('change', onRoomTypeChange);
