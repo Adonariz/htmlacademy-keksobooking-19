@@ -14,6 +14,7 @@
   var LOCATION_Y_MIN = 130;
   var LOCATION_Y_MAX = 630;
   var PIN_WIDTH = 50;
+  var PIN_HEIGHT = 70;
 
   var roomData = {
     'palace': {
@@ -89,6 +90,8 @@
   var advertsArray = generateAdvertsArray(NUMBER_OF_ADVERTS);
 
   window.data = {
+    PIN_WIDTH: PIN_WIDTH,
+    PIN_HEIGHT: PIN_HEIGHT,
     advertsArray: advertsArray,
     roomData: roomData
   };

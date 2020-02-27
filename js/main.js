@@ -1,7 +1,7 @@
 'use strict';
 
-var PIN_WIDTH = 50;
-var PIN_HEIGHT = 70;
+// var PIN_WIDTH = 50;
+// var PIN_HEIGHT = 70;
 
 var map = document.querySelector('.map');
 var pinsBlock = map.querySelector('.map__pins');
@@ -11,7 +11,6 @@ var advertFormFieldsets = advertForm.querySelectorAll('fieldset');
 var filtersContainer = map.querySelector('.map__filters-container');
 var mapFilters = filtersContainer.querySelectorAll('.map__filter');
 var mapFeatures = filtersContainer.querySelectorAll('.map__features');
-var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
 var advertRoomNumber = advertForm.querySelector('#room_number');
 var advertGuestNumber = advertForm.querySelector('#capacity');
@@ -21,23 +20,12 @@ var advertCheckInTime = advertForm.querySelector('#timein');
 var advertCheckOutTime = advertForm.querySelector('#timeout');
 
 // создаем и вставляем фрагмент
-var renderPin = function (advert) {
-  var pin = pinTemplate.cloneNode(true);
-  var pinImg = pin.querySelector('img');
-
-  pinImg.src = advert.author.avatar;
-  pinImg.alt = advert.offer.title;
-  pin.style.left = (advert.location.x - 25) + 'px';
-  pin.style.top = (advert.location.y - 70) + 'px';
-
-  return pin;
-};
 
 var createPinsBlock = function (array) {
   var fragment = document.createDocumentFragment();
 
   for (var i = 0; i < array.length; i++) {
-    fragment.appendChild(renderPin(array[i]));
+    fragment.appendChild(window.pin.render(array[i]));
   }
 
   return fragment;
@@ -128,7 +116,7 @@ var onMainPinKeydown = function (evt) {
 // валидация формы
 // заполнение адреса
 var fillAddress = function () {
-  advertForm.querySelector('#address').value = (mainPin.offsetLeft + Math.floor(PIN_WIDTH / 2)) + ', ' + (mainPin.offsetTop + PIN_HEIGHT);
+  advertForm.querySelector('#address').value = (mainPin.offsetLeft + Math.floor(window.data.PIN_WIDTH / 2)) + ', ' + (mainPin.offsetTop + window.data.PIN_HEIGHT);
 };
 
 // сочетание гостей и спальных мест
