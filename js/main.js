@@ -1,21 +1,5 @@
 'use strict';
 
-var NUMBER_OF_ADVERTS = 8;
-var TIMES = ['12:00', '13:00', '14:00'];
-var TYPES = ['palace', 'flat', 'house', 'bungalo'];
-var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-var ROOMS_MIN = 1;
-var ROOMS_MAX = 3;
-var GUESTS_MIN = 0;
-var GUESTS_MAX = 2;
-var PRICE_MIN = 0;
-var PRICE_MAX = 10000;
-var LOCATION_Y_MIN = 130;
-var LOCATION_Y_MAX = 630;
-var MOUSE_LB = 0;
-var ENTER_KEY = 'Enter';
-var ESC_KEY = 'Escape';
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
 
@@ -28,79 +12,13 @@ var filtersContainer = map.querySelector('.map__filters-container');
 var mapFilters = filtersContainer.querySelectorAll('.map__filter');
 var mapFeatures = filtersContainer.querySelectorAll('.map__features');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-var popupCardTemplate = document.querySelector('#card').content.querySelector('.popup');
+
 var advertRoomNumber = advertForm.querySelector('#room_number');
 var advertGuestNumber = advertForm.querySelector('#capacity');
 var advertRoomType = advertForm.querySelector('#type');
 var advertPrice = advertForm.querySelector('#price');
 var advertCheckInTime = advertForm.querySelector('#timein');
 var advertCheckOutTime = advertForm.querySelector('#timeout');
-
-var locationXMin = PIN_WIDTH / 2;
-var locationXMax = map.offsetWidth - PIN_WIDTH / 2;
-
-// генерируем случайное целое число
-var getRandomInt = function (min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
-
-// получаем случайный элемент из массива
-var getRandomArrayItem = function (array) {
-  return array[getRandomInt(0, array.length - 1)];
-};
-
-// задаем случайную длину массиву
-var clipArray = function (array) {
-  return array.slice(0, getRandomInt(1, array.length));
-};
-
-// создаем объявление
-var generateAdvert = function (index) {
-  var locationX = getRandomInt(locationXMin, locationXMax);
-  var locationY = getRandomInt(LOCATION_Y_MIN, LOCATION_Y_MAX);
-
-  var advert = {
-    author: {
-      avatar: 'img/avatars/user0' + (index + 1) + '.png'
-    },
-
-    offer: {
-      title: 'Заголовок объявления',
-      address: locationX + ', ' + locationY,
-      price: getRandomInt(PRICE_MIN, PRICE_MAX),
-      type: getRandomArrayItem(TYPES),
-      rooms: getRandomInt(ROOMS_MIN, ROOMS_MAX),
-      guests: getRandomInt(GUESTS_MIN, GUESTS_MAX),
-      checkin: getRandomArrayItem(TIMES),
-      checkout: getRandomArrayItem(TIMES),
-      features: clipArray(FEATURES),
-      description: 'Описание объявления',
-      photos: clipArray(PHOTOS)
-    },
-
-    location: {
-      x: locationX,
-      y: locationY
-    }
-  };
-
-  return advert;
-};
-
-// создаем массив из объектов
-var generateAdvertsArray = function (number) {
-  var adverts = [];
-
-  for (var i = 0; i < number; i++) {
-    adverts.push(generateAdvert(i));
-  }
-
-  return adverts;
-};
-
-var advertsArray = generateAdvertsArray(NUMBER_OF_ADVERTS);
 
 // создаем и вставляем фрагмент
 var renderPin = function (advert) {
@@ -125,112 +43,6 @@ var createPinsBlock = function (array) {
   return fragment;
 };
 
-// склонение числительных (numeralize-ru)
-var pluralize = function (count, one, two, five) {
-  count = Math.floor(Math.abs(count)) % 100;
-  if (count > 10 && count < 20) {
-    return five;
-  }
-
-  count = count % 10;
-  if (count === 1) {
-    return one;
-  }
-
-  if (count >= 2 && count <= 4) {
-    return two;
-  }
-
-  return five;
-};
-
-function declOfNum(number, titles) {
-  var cases = [2, 0, 1, 1, 1, 2];
-  return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
-}
-
-// создаем карточку объявления
-var renderPopupCard = function (advert) {
-  var сard = popupCardTemplate.cloneNode(true);
-  var avatar = сard.querySelector('.popup__avatar');
-  var title = сard.querySelector('.popup__title');
-  var address = сard.querySelector('.popup__text--address');
-  var price = сard.querySelector('.popup__text--price');
-  var type = сard.querySelector('.popup__type');
-  var capacity = сard.querySelector('.popup__text--capacity');
-  var time = сard.querySelector('.popup__text--time');
-  var features = сard.querySelector('.popup__features');
-  var feature = сard.querySelectorAll('.popup__feature');
-  var description = сard.querySelector('.popup__description');
-  var photos = сard.querySelector('.popup__photos');
-  var photo = photos.querySelector('.popup__photo');
-  var roomType = '';
-  var roomText = 'комната';
-  var guestText = 'гостя';
-
-  avatar.src = advert.author.avatar;
-  title.textContent = advert.offer.title;
-  address.textContent = advert.offer.address;
-  price.textContent = advert.offer.price + '₽/ночь';
-
-  switch (advert.offer.type) {
-    case 'palace':
-      roomType = 'Дворец';
-      break;
-
-    case 'flat':
-      roomType = 'Квартира';
-      break;
-
-    case 'house':
-      roomType = 'Дом';
-      break;
-
-    case 'bungalo':
-      roomType = 'Бунгало';
-      break;
-  }
-
-  type.textContent = roomType;
-  // склоняем "комната"
-  if (advert.offer.rooms > 1 && advert.offer.rooms < 5) {
-    roomText = 'комнаты';
-  } else if (advert.offer.rooms >= 5) {
-    roomText = 'комнат';
-  }
-  // склоняем "гость"
-  if (advert.offer.guests > 1) {
-    guestText = 'гостей';
-  }
-
-  capacity.textContent = advert.offer.rooms + ' ' + roomText + ' для ' + advert.offer.guests + ' ' + guestText;
-  // если выпадает 0 гостей
-  if (advert.offer.guests === 0) {
-    capacity.textContent = advert.offer.rooms + ' ' + roomText + ' без гостей';
-  }
-
-  time.textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
-
-  // удаляем ненужные фичи из шаблона
-  for (var i = features.length - 1; i >= advert.offer.features.length; i--) {
-    features.removeChild(feature[i]);
-  }
-
-  description.textContent = advert.offer.description;
-  photo.src = advert.offer.photos[0];
-
-  // если больше одной фото
-  if (advert.offer.photos.length > 1) {
-    for (var j = 1; j < advert.offer.photos.length; j++) {
-      var newPopupPhoto = photo.cloneNode(false);
-      photos.appendChild(newPopupPhoto);
-      newPopupPhoto.src = advert.offer.photos[j];
-    }
-  }
-
-  return сard;
-};
-
 // отображение карточки при нажатии на метку
 var addPopupCard = function () {
   var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
@@ -240,7 +52,7 @@ var addPopupCard = function () {
       if (isElement) {
         isElement.remove();
       }
-      map.insertBefore(renderPopupCard(advertsArray[index]), filtersContainer);
+      map.insertBefore(window.card.render(window.data.advertsArray[index]), filtersContainer);
       closePopup();
     });
   });
@@ -256,7 +68,7 @@ var closePopup = function () {
   }, {once: true});
 
   document.addEventListener('keydown', function (evt) {
-    if (evt.key === ESC_KEY) {
+    if (evt.key === window.utils.ESC_KEY) {
       popup.remove();
     }
   }, {once: true});
@@ -288,7 +100,7 @@ var enableInputs = function (inputsArray) {
 var activatePage = function () {
   map.classList.remove('map--faded');
   advertForm.classList.remove('ad-form--disabled');
-  pinsBlock.appendChild(createPinsBlock(advertsArray));
+  pinsBlock.appendChild(createPinsBlock(window.data.advertsArray));
   addPopupCard();
   enableInputs(advertFormFieldsets);
   enableInputs(mapFilters);
@@ -298,7 +110,7 @@ var activatePage = function () {
 };
 
 var onMainPinMousedown = function (evt) {
-  if (evt.button === MOUSE_LB) {
+  if (evt.button === window.utils.MOUSE_LB) {
     activatePage();
     mainPin.removeEventListener('mousedown', onMainPinMousedown);
     mainPin.removeEventListener('keydown', onMainPinKeydown);
@@ -306,7 +118,7 @@ var onMainPinMousedown = function (evt) {
 };
 
 var onMainPinKeydown = function (evt) {
-  if (evt.key === ENTER_KEY) {
+  if (evt.key === window.utils.ENTER_KEY) {
     activatePage();
     mainPin.removeEventListener('mousedown', onMainPinMousedown);
     mainPin.removeEventListener('keydown', onMainPinKeydown);
