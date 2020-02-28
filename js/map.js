@@ -147,12 +147,12 @@
 
       var onMouseUp = function (upEvt) {
         upEvt.preventDefault();
-        mainPin.removeEventListener('mousemove', onMouseMove);
-        mainPin.removeEventListener('mouseup', onMouseUp);
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
       };
 
-      mainPin.addEventListener('mousemove', onMouseMove);
-      mainPin.addEventListener('mouseup', onMouseUp);
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
       mainPin.removeEventListener('keydown', onMainPinKeydown);
     }
   };
