@@ -41,9 +41,10 @@
       }
 
       description.textContent = advert.offer.description;
+
+      // фото
       photo.src = advert.offer.photos[0];
 
-      // если больше одной фото
       if (advert.offer.photos.length > 1) {
         for (var j = 1; j < advert.offer.photos.length; j++) {
           var newPopupPhoto = photo.cloneNode(false);

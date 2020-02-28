@@ -39,6 +39,8 @@
   };
 
   var map = document.querySelector('.map');
+  var form = document.querySelector('.ad-form');
+  var mainPin = document.querySelector('.map__pin--main');
 
   // создаем объявление
   var generateAdvert = function (index) {
@@ -93,6 +95,9 @@
     PIN_WIDTH: PIN_WIDTH,
     PIN_HEIGHT: PIN_HEIGHT,
     advertsArray: advertsArray,
-    roomData: roomData
+    roomData: roomData,
+    mapEl: map,
+    formEl: form,
+    mainPin: mainPin
   };
 })();

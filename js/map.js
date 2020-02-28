@@ -1,11 +1,13 @@
 'use strict';
 
 (function () {
-  var map = document.querySelector('.map');
-  var mainPin = map.querySelector('.map__pin--main');
+  var map = window.data.mapEl;
+  var mainPin = window.data.mainPin;
   var filtersContainer = map.querySelector('.map__filters-container');
   var pinsBlock = map.querySelector('.map__pins');
-  var form = document.querySelector('.ad-form');
+  var mapFilters = map.querySelectorAll('.map__filter');
+  var mapFeatures = map.querySelectorAll('.map__features');
+  var form = window.data.formEl;
 
   // создаем и вставляем фрагмент
   var createPinsBlock = function (array) {
@@ -49,13 +51,25 @@
     }, {once: true});
   };
 
+  // страница деактивирована
+  window.utils.disableInput(mapFilters);
+  window.utils.disableInput(mapFeatures);
+  window.utils.disableInput(window.form.formFieldsets);
+
   // активируем страницу
+  var activateAllInputs = function () {
+    window.utils.enableInput(mapFilters);
+    window.utils.enableInput(mapFeatures);
+    window.utils.enableInput(window.form.formFieldsets);
+  };
+
   var activatePage = function () {
     map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
+
     pinsBlock.appendChild(createPinsBlock(window.data.advertsArray));
     addPopupCard();
-    window.form.enableAllInputs();
+    activateAllInputs();
   };
 
   var onMainPinMousedown = function (evt) {

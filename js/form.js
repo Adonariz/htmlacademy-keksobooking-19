@@ -6,50 +6,27 @@
   var PIN_WIDTH = window.data.PIN_WIDTH;
   var PIN_HEIGHT = window.data.PIN_HEIGHT;
 
-  var map = document.querySelector('.map');
-  var mainPin = map.querySelector('.map__pin--main');
-  var form = document.querySelector('.ad-form');
+  var form = window.data.formEl;
+  var address = form.querySelector('#address');
   var roomNumber = form.querySelector('#room_number');
   var guestNumber = form.querySelector('#capacity');
   var roomType = form.querySelector('#type');
   var price = form.querySelector('#price');
   var checkInTime = form.querySelector('#timein');
   var checkOutTime = form.querySelector('#timeout');
-  var advertFormFieldsets = form.querySelectorAll('fieldset');
-  var mapFilters = map.querySelectorAll('.map__filter');
-  var mapFeatures = map.querySelectorAll('.map__features');
+  var formFieldsets = form.querySelectorAll('fieldset');
 
   var defaultMinPrice = window.data.roomData[roomType.value].minPrice;
-
-  // управление инпутами
-  var disableInputs = function (inputsArray) {
-    for (var i = 0; i < inputsArray.length; i++) {
-      inputsArray[i].setAttribute('disabled', 'true');
-    }
-  };
-
-  var enableInputs = function (inputsArray) {
-    for (var i = 0; i < inputsArray.length; i++) {
-      inputsArray[i].removeAttribute('disabled');
-    }
-  };
-
-  // отключение всех инпутов
-  var disableAllInputs = function () {
-    disableInputs(advertFormFieldsets);
-    disableInputs(mapFilters);
-    disableInputs(mapFeatures);
-  };
+  var mainPin = window.data.mainPin;
 
   // заполнение адреса
   var getDefaultAddress = function () {
-    form.querySelector('#address').value = (mainPin.offsetLeft + Math.floor(PIN_WIDTH / 2)) + ', ' + (mainPin.offsetTop + PIN_HEIGHT);
+    address.value = (mainPin.offsetLeft + Math.floor(PIN_WIDTH / 2)) + ', ' + (mainPin.offsetTop + PIN_HEIGHT);
   };
 
   // валидация формы
   // дефолтные значения
   getDefaultAddress();
-  disableAllInputs();
   price.setAttribute('min', defaultMinPrice);
   price.placeholder = defaultMinPrice;
   guestNumber.value = DEFAULT_GUEST_NUMBER;
@@ -92,11 +69,7 @@
 
   // экспортируемые значения
   window.form = {
-    // активация всех инпутов
-    enableAllInputs: function () {
-      enableInputs(advertFormFieldsets);
-      enableInputs(mapFilters);
-      enableInputs(mapFeatures);
-    }
+    formFieldsets: formFieldsets,
+    address: address
   };
 })();
