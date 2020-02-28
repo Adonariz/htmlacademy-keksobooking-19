@@ -13,8 +13,11 @@
   var PRICE_MAX = 10000;
   var LOCATION_Y_MIN = 130;
   var LOCATION_Y_MAX = 630;
-  var PIN_WIDTH = 50;
-  var PIN_HEIGHT = 70;
+
+  var pinDims = {
+    width: 50,
+    height: 70
+  };
 
   var roomData = {
     'palace': {
@@ -42,10 +45,15 @@
   var form = document.querySelector('.ad-form');
   var mainPin = document.querySelector('.map__pin--main');
 
+  var mainPinDims = {
+    width: 65,
+    height: 65
+  };
+
   // создаем объявление
   var generateAdvert = function (index) {
-    var locationXMin = PIN_WIDTH / 2;
-    var locationXMax = map.offsetWidth - PIN_WIDTH / 2;
+    var locationXMin = pinDims.width / 2;
+    var locationXMax = map.offsetWidth - pinDims.width / 2;
     var locationX = window.utils.getRandomInt(locationXMin, locationXMax);
     var locationY = window.utils.getRandomInt(LOCATION_Y_MIN, LOCATION_Y_MAX);
     var time = window.utils.getRandomArrayItem(TIMES);
@@ -92,8 +100,12 @@
   var advertsArray = generateAdvertsArray(NUMBER_OF_ADVERTS);
 
   window.data = {
-    PIN_WIDTH: PIN_WIDTH,
-    PIN_HEIGHT: PIN_HEIGHT,
+    PIN_WIDTH: pinDims.width,
+    PIN_HEIGHT: pinDims.height,
+    MAIN_PIN_WIDTH: mainPinDims.width,
+    MAIN_PIN_HEIGHT: mainPinDims.height,
+    LOCATION_Y_MIN: LOCATION_Y_MIN,
+    LOCATION_Y_MAX: LOCATION_Y_MAX,
     advertsArray: advertsArray,
     roomData: roomData,
     mapEl: map,

@@ -3,8 +3,8 @@
 (function () {
   var DEFAULT_GUEST_NUMBER = 1;
   var MAX_ROOMS = '100';
-  var PIN_WIDTH = window.data.PIN_WIDTH;
-  var PIN_HEIGHT = window.data.PIN_HEIGHT;
+  var MAIN_PIN_WIDTH = window.data.MAIN_PIN_WIDTH;
+  var MAIN_PIN_HEIGHT = window.data.MAIN_PIN_HEIGHT;
 
   var form = window.data.formEl;
   var address = form.querySelector('#address');
@@ -21,7 +21,7 @@
 
   // заполнение адреса
   var getDefaultAddress = function () {
-    address.value = (mainPin.offsetLeft + Math.floor(PIN_WIDTH / 2)) + ', ' + (mainPin.offsetTop + PIN_HEIGHT);
+    address.value = (mainPin.offsetLeft + Math.floor(MAIN_PIN_WIDTH / 2)) + ', ' + (mainPin.offsetTop + MAIN_PIN_HEIGHT);
   };
 
   // валидация формы
