@@ -28,6 +28,21 @@
     pluralize: function (number, titles) {
       var cases = [2, 0, 1, 1, 1, 2];
       return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
+    },
+
+    // отключение инпутов
+    disableInput: function (inputsArray) {
+      for (var i = 0; i < inputsArray.length; i++) {
+        inputsArray[i].setAttribute('disabled', 'true');
+      }
+    },
+
+    // включение инпутов
+    enableInput: function (inputsArray) {
+      for (var i = 0; i < inputsArray.length; i++) {
+        inputsArray[i].removeAttribute('disabled');
+      }
     }
+
   };
 })();
