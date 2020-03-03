@@ -18,7 +18,7 @@
       fragment.appendChild(window.pin.render(array[i]));
     }
 
-    return fragment;
+    pinsBlock.appendChild(fragment);
   };
 
   // отображение карточки при нажатии на метку
@@ -67,8 +67,7 @@
   var activatePage = function () {
     map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
-
-    pinsBlock.appendChild(createPinsBlock(window.data.advertsArray));
+    window.backend.load(createPinsBlock, window.error);
     addPopupCard();
     activateAllInputs();
   };

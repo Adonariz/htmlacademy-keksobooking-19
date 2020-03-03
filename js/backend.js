@@ -1,8 +1,8 @@
 'use strict';
 
 (function () {
-  var LOAD_URL = 'https://js.dump.academy/code-and-magick/data';
-  var SEND_URL = 'https://js.dump.academy/code-and-magick/';
+  var LOAD_URL = 'https://js.dump.academy/keksobooking/data';
+  // var SEND_URL = 'https://js.dump.academy/code-and-magick/';
   var TIMEOUT_IN_MS = 10000; // 10 сек
   var methods = {
     GET: 'GET',
@@ -52,9 +52,9 @@
       request.send();
     },
 
-    save: function (data, onLoad, onError) {
-      var request = createRequest(methods.POST, SEND_URL, onLoad, onError);
-      request.send(data);
-    }
+    // save: function (data, onLoad, onError) {
+    //   var request = createRequest(methods.POST, SEND_URL, onLoad, onError);
+    //   request.send(data);
+    // }
   };
 })();
