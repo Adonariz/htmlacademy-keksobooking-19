@@ -15,14 +15,16 @@
     var fragment = document.createDocumentFragment();
 
     for (var i = 0; i < array.length; i++) {
-      fragment.appendChild(window.pin.render(array[i]));
+      var pin = window.pin.render(array[i]);
+      fragment.appendChild(pin);
     }
 
     pinsBlock.appendChild(fragment);
+    addPopupCard(array);
   };
 
   // отображение карточки при нажатии на метку
-  var addPopupCard = function () {
+  var addPopupCard = function (array) {
     var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
     pins.forEach(function (element, index) {
       element.addEventListener('click', function () {
@@ -30,7 +32,7 @@
         if (isElement) {
           isElement.remove();
         }
-        map.insertBefore(window.card.render(window.data.advertsArray[index]), filtersContainer);
+        map.insertBefore(window.card.render(array[index]), filtersContainer);
         closePopup();
       });
     });
@@ -68,7 +70,6 @@
     map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
     window.backend.load(createPinsBlock, window.error);
-    addPopupCard();
     activateAllInputs();
   };
 
