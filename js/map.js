@@ -38,17 +38,37 @@
     });
   };
 
+  var onPinClick = function (evt) {
+    var isActive = map.querySelector('.map__pin--active');
+
+    if (evt.target.matches('.map__pin:not(.map__pin--main)')) {
+      if (isActive) {
+        isActive.classList.remove('map__pin--active');
+      }
+      evt.target.classList.add('map__pin--active');
+    } else if (evt.target.matches('.map__pin:not(.map__pin--main) img')) {
+      if (isActive) {
+        isActive.classList.remove('map__pin--active');
+      }
+      evt.target.parentNode.classList.add('map__pin--active');
+    }
+  };
+
   // закрытие карточки
   var closePopup = function () {
     var popup = document.querySelector('.map__card');
     var popupClose = popup.querySelector('.popup__close');
 
     popupClose.addEventListener('click', function () {
+      var activePin = map.querySelector('.map__pin--active');
+      activePin.classList.remove('map__pin--active');
       popup.remove();
     }, {once: true});
 
     document.addEventListener('keydown', function (evt) {
       if (evt.key === window.utils.ESC_KEY) {
+        var activePin = map.querySelector('.map__pin--active');
+        activePin.classList.remove('map__pin--active');
         popup.remove();
       }
     }, {once: true});
@@ -70,6 +90,7 @@
     map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
     window.backend.load(createPinsBlock, window.error);
+    map.addEventListener('click', onPinClick);
     activateAllInputs();
   };
 
