@@ -25,6 +25,35 @@
     },
   };
 
+  var renderFeatures = function (features, container) {
+    container.textContent = '';
+    var fragment = document.createDocumentFragment();
+    var featureElement = document.createElement('li');
+    featureElement.classList.add('popup__feature');
+
+    features.forEach(function (element) {
+      var newFeature = featureElement.cloneNode(true);
+      var classMod = 'popup__feature--' + element;
+      newFeature.classList.add(classMod);
+      fragment.appendChild(newFeature);
+    });
+
+    container.appendChild(fragment);
+  };
+
+  var renderPhotos = function (photos, container, photo) {
+    container.textContent = '';
+    var fragment = document.createDocumentFragment();
+
+    photos.forEach(function (element) {
+      var newPhoto = photo.cloneNode(true);
+      newPhoto.src = element;
+      fragment.appendChild(newPhoto);
+    });
+
+    container.appendChild(fragment);
+  };
+
   window.card = {
     roomData: roomData,
     render: function (advert) {
@@ -37,7 +66,6 @@
       var capacity = сard.querySelector('.popup__text--capacity');
       var time = сard.querySelector('.popup__text--time');
       var featuresBlock = сard.querySelector('.popup__features');
-      var features = сard.querySelectorAll('.popup__feature');
       var description = сard.querySelector('.popup__description');
       var photos = сard.querySelector('.popup__photos');
       var photo = photos.querySelector('.popup__photo');
@@ -50,31 +78,15 @@
       price.textContent = advert.offer.price + '₽/ночь';
       type.textContent = roomData[advert.offer.type].title;
 
-      capacity.textContent = advert.offer.rooms + ' ' + window.utils.pluralize(advert.offer.rooms, roomText) + ' для ' + advert.offer.guests + ' ' + window.utils.pluralize(advert.offer.guests, guestText);
-      // если выпадает 0 гостей
       if (advert.offer.guests === 0) {
         capacity.textContent = advert.offer.rooms + ' ' + window.utils.pluralize(advert.offer.rooms, roomText) + ' без гостей';
       }
 
+      capacity.textContent = advert.offer.rooms + ' ' + window.utils.pluralize(advert.offer.rooms, roomText) + ' для ' + advert.offer.guests + ' ' + window.utils.pluralize(advert.offer.guests, guestText);
       time.textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
-
-      // удаляем ненужные фичи из шаблона
-      for (var i = features.length - 1; i >= advert.offer.features.length; i--) {
-        featuresBlock.removeChild(features[i]);
-      }
-
+      renderFeatures(advert.offer.features, featuresBlock);
       description.textContent = advert.offer.description;
-
-      // фото
-      photo.src = advert.offer.photos[0];
-
-      if (advert.offer.photos.length > 1) {
-        for (var j = 1; j < advert.offer.photos.length; j++) {
-          var newPopupPhoto = photo.cloneNode(false);
-          photos.appendChild(newPopupPhoto);
-          newPopupPhoto.src = advert.offer.photos[j];
-        }
-      }
+      renderPhotos(advert.offer.photos, photos, photo);
 
       return сard;
     }
