@@ -1,13 +1,18 @@
 'use strict';
 
 (function () {
-  var map = window.data.mapEl;
-  var mainPin = window.data.mainPin;
+  var MAIN_PIN_WIDTH = 65;
+  var MAIN_PIN_HEIGHT = 65;
+  var LOCATION_Y_MIN = 130;
+  var LOCATION_Y_MAX = 630;
+
+  var map = document.querySelector('.map');
+  var mainPin = document.querySelector('.map__pin--main');
   var filtersContainer = map.querySelector('.map__filters-container');
   var pinsBlock = map.querySelector('.map__pins');
   var mapFilters = map.querySelectorAll('.map__filter');
   var mapFeatures = map.querySelectorAll('.map__features');
-  var form = window.data.formEl;
+  var form = window.form.formEl;
   var address = window.form.address;
 
   // создаем и вставляем фрагмент
@@ -74,10 +79,16 @@
     }, {once: true});
   };
 
+  // заполнение адреса
+  var getDefaultAddress = function () {
+    address.value = (mainPin.offsetLeft + Math.floor(MAIN_PIN_WIDTH / 2)) + ', ' + (mainPin.offsetTop + MAIN_PIN_HEIGHT);
+  };
+
   // страница деактивирована
   window.utils.disableInput(mapFilters);
   window.utils.disableInput(mapFeatures);
   window.utils.disableInput(window.form.formFieldsets);
+  getDefaultAddress();
 
   // активируем страницу
   var activateAllInputs = function () {
@@ -112,8 +123,8 @@
         moveEvt.preventDefault();
 
         var mainPinDims = {
-          width: window.data.MAIN_PIN_WIDTH,
-          height: window.data.MAIN_PIN_HEIGHT
+          width: MAIN_PIN_WIDTH,
+          height: MAIN_PIN_HEIGHT
         };
 
         var mapLimits = {
@@ -123,8 +134,8 @@
           },
 
           y: {
-            min: window.data.LOCATION_Y_MIN,
-            max: window.data.LOCATION_Y_MAX
+            min: LOCATION_Y_MIN,
+            max: LOCATION_Y_MAX
           }
         };
 

@@ -1,8 +1,8 @@
 'use strict';
 
 (function () {
-  var PIN_WIDTH = window.data.PIN_WIDTH;
-  var PIN_HEIGHT = window.data.PIN_HEIGHT;
+  var PIN_WIDTH = 50;
+  var PIN_HEIGHT = 70;
 
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 

@@ -3,10 +3,8 @@
 (function () {
   var DEFAULT_GUEST_NUMBER = 1;
   var MAX_ROOMS = '100';
-  var MAIN_PIN_WIDTH = window.data.MAIN_PIN_WIDTH;
-  var MAIN_PIN_HEIGHT = window.data.MAIN_PIN_HEIGHT;
 
-  var form = window.data.formEl;
+  var form = document.querySelector('.ad-form');
   var address = form.querySelector('#address');
   var roomNumber = form.querySelector('#room_number');
   var guestNumber = form.querySelector('#capacity');
@@ -16,17 +14,10 @@
   var checkOutTime = form.querySelector('#timeout');
   var formFieldsets = form.querySelectorAll('fieldset');
 
-  var defaultMinPrice = window.data.roomData[roomType.value].minPrice;
-  var mainPin = window.data.mainPin;
-
-  // заполнение адреса
-  var getDefaultAddress = function () {
-    address.value = (mainPin.offsetLeft + Math.floor(MAIN_PIN_WIDTH / 2)) + ', ' + (mainPin.offsetTop + MAIN_PIN_HEIGHT);
-  };
+  var defaultMinPrice = window.card.roomData[roomType.value].minPrice;
 
   // валидация формы
   // дефолтные значения
-  getDefaultAddress();
   price.setAttribute('min', defaultMinPrice);
   price.placeholder = defaultMinPrice;
   guestNumber.value = DEFAULT_GUEST_NUMBER;
@@ -46,7 +37,7 @@
 
   // минимальная стоимость от типа жилья
   var onRoomTypeChange = function () {
-    var minPrice = window.data.roomData[roomType.value].minPrice;
+    var minPrice = window.card.roomData[roomType.value].minPrice;
     price.min = minPrice;
     price.placeholder = minPrice;
   };
@@ -69,6 +60,7 @@
 
   // экспортируемые значения
   window.form = {
+    formEl: form,
     formFieldsets: formFieldsets,
     address: address
   };

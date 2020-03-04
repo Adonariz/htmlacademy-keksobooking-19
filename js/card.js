@@ -3,7 +3,30 @@
 (function () {
   var popupCardTemplate = document.querySelector('#card').content.querySelector('.popup');
 
+  var roomData = {
+    'palace': {
+      title: 'Дворец',
+      minPrice: 10000
+    },
+
+    'flat': {
+      title: 'Квартира',
+      minPrice: 1000
+    },
+
+    'house': {
+      title: 'Дом',
+      minPrice: 5000
+    },
+
+    'bungalo': {
+      title: 'Бунгало',
+      minPrice: 0
+    },
+  };
+
   window.card = {
+    roomData: roomData,
     render: function (advert) {
       var сard = popupCardTemplate.cloneNode(true);
       var avatar = сard.querySelector('.popup__avatar');
@@ -25,7 +48,7 @@
       title.textContent = advert.offer.title;
       address.textContent = advert.offer.address;
       price.textContent = advert.offer.price + '₽/ночь';
-      type.textContent = window.data.roomData[advert.offer.type].title;
+      type.textContent = roomData[advert.offer.type].title;
 
       capacity.textContent = advert.offer.rooms + ' ' + window.utils.pluralize(advert.offer.rooms, roomText) + ' для ' + advert.offer.guests + ' ' + window.utils.pluralize(advert.offer.guests, guestText);
       // если выпадает 0 гостей
