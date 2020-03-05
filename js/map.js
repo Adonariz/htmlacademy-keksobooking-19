@@ -1,13 +1,18 @@
 'use strict';
 
 (function () {
-  var map = window.data.mapEl;
-  var mainPin = window.data.mainPin;
+  var MAIN_PIN_WIDTH = 65;
+  var MAIN_PIN_HEIGHT = 65;
+  var LOCATION_Y_MIN = 130;
+  var LOCATION_Y_MAX = 630;
+
+  var map = document.querySelector('.map');
+  var mainPin = document.querySelector('.map__pin--main');
   var filtersContainer = map.querySelector('.map__filters-container');
   var pinsBlock = map.querySelector('.map__pins');
   var mapFilters = map.querySelectorAll('.map__filter');
   var mapFeatures = map.querySelectorAll('.map__features');
-  var form = window.data.formEl;
+  var form = window.form.formEl;
   var address = window.form.address;
 
   // создаем и вставляем фрагмент
@@ -15,14 +20,16 @@
     var fragment = document.createDocumentFragment();
 
     for (var i = 0; i < array.length; i++) {
-      fragment.appendChild(window.pin.render(array[i]));
+      var pin = window.pin.render(array[i]);
+      fragment.appendChild(pin);
     }
 
-    return fragment;
+    pinsBlock.appendChild(fragment);
+    addPopupCard(array);
   };
 
   // отображение карточки при нажатии на метку
-  var addPopupCard = function () {
+  var addPopupCard = function (array) {
     var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
     pins.forEach(function (element, index) {
       element.addEventListener('click', function () {
@@ -30,10 +37,26 @@
         if (isElement) {
           isElement.remove();
         }
-        map.insertBefore(window.card.render(window.data.advertsArray[index]), filtersContainer);
+        map.insertBefore(window.card.render(array[index]), filtersContainer);
         closePopup();
       });
     });
+  };
+
+  var onPinClick = function (evt) {
+    var isActive = map.querySelector('.map__pin--active');
+
+    if (evt.target.matches('.map__pin:not(.map__pin--main)')) {
+      if (isActive) {
+        isActive.classList.remove('map__pin--active');
+      }
+      evt.target.classList.add('map__pin--active');
+    } else if (evt.target.matches('.map__pin:not(.map__pin--main) img')) {
+      if (isActive) {
+        isActive.classList.remove('map__pin--active');
+      }
+      evt.target.parentNode.classList.add('map__pin--active');
+    }
   };
 
   // закрытие карточки
@@ -42,20 +65,30 @@
     var popupClose = popup.querySelector('.popup__close');
 
     popupClose.addEventListener('click', function () {
+      var activePin = map.querySelector('.map__pin--active');
+      activePin.classList.remove('map__pin--active');
       popup.remove();
     }, {once: true});
 
     document.addEventListener('keydown', function (evt) {
       if (evt.key === window.utils.ESC_KEY) {
+        var activePin = map.querySelector('.map__pin--active');
+        activePin.classList.remove('map__pin--active');
         popup.remove();
       }
     }, {once: true});
+  };
+
+  // заполнение адреса
+  var getDefaultAddress = function () {
+    address.value = (mainPin.offsetLeft + Math.floor(MAIN_PIN_WIDTH / 2)) + ', ' + (mainPin.offsetTop + MAIN_PIN_HEIGHT);
   };
 
   // страница деактивирована
   window.utils.disableInput(mapFilters);
   window.utils.disableInput(mapFeatures);
   window.utils.disableInput(window.form.formFieldsets);
+  getDefaultAddress();
 
   // активируем страницу
   var activateAllInputs = function () {
@@ -67,9 +100,8 @@
   var activatePage = function () {
     map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
-
-    pinsBlock.appendChild(createPinsBlock(window.data.advertsArray));
-    addPopupCard();
+    window.backend.load(createPinsBlock, window.error);
+    map.addEventListener('click', onPinClick);
     activateAllInputs();
   };
 
@@ -91,8 +123,8 @@
         moveEvt.preventDefault();
 
         var mainPinDims = {
-          width: window.data.MAIN_PIN_WIDTH,
-          height: window.data.MAIN_PIN_HEIGHT
+          width: MAIN_PIN_WIDTH,
+          height: MAIN_PIN_HEIGHT
         };
 
         var mapLimits = {
@@ -102,8 +134,8 @@
           },
 
           y: {
-            min: window.data.LOCATION_Y_MIN,
-            max: window.data.LOCATION_Y_MAX
+            min: LOCATION_Y_MIN,
+            max: LOCATION_Y_MAX
           }
         };
 
