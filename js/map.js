@@ -12,7 +12,7 @@
   var pinsBlock = map.querySelector('.map__pins');
   var mapFilters = map.querySelectorAll('.map__filter');
   var mapFeatures = map.querySelectorAll('.map__features');
-  var form = window.form.formEl;
+  var form = window.form.element;
   var address = window.form.address;
 
   // создаем и вставляем фрагмент
@@ -87,20 +87,20 @@
   // страница деактивирована
   window.utils.disableInput(mapFilters);
   window.utils.disableInput(mapFeatures);
-  window.utils.disableInput(window.form.formFieldsets);
+  window.utils.disableInput(window.form.fieldsets);
   getDefaultAddress();
 
   // активируем страницу
   var activateAllInputs = function () {
     window.utils.enableInput(mapFilters);
     window.utils.enableInput(mapFeatures);
-    window.utils.enableInput(window.form.formFieldsets);
+    window.utils.enableInput(window.form.fieldsets);
   };
 
   var activatePage = function () {
     map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
-    window.backend.load(createPinsBlock, window.error);
+    window.backend.load(createPinsBlock, window.messages.error);
     map.addEventListener('click', onPinClick);
     activateAllInputs();
   };

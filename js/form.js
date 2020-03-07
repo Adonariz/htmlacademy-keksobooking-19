@@ -14,7 +14,7 @@
   var checkOutTime = form.querySelector('#timeout');
   var formFieldsets = form.querySelectorAll('fieldset');
 
-  var defaultMinPrice = window.card.roomData[roomType.value].minPrice;
+  var defaultMinPrice = window.card.RoomData[roomType.value].minPrice;
 
   // валидация формы
   // дефолтные значения
@@ -60,8 +60,8 @@
 
   // экспортируемые значения
   window.form = {
-    formEl: form,
-    formFieldsets: formFieldsets,
+    element: form,
+    fieldsets: formFieldsets,
     address: address
   };
 })();
