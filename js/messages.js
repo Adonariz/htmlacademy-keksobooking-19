@@ -13,6 +13,12 @@
       node.remove();
     }, {once: true});
 
+    document.addEventListener('keydown', function (evt) {
+      if (evt.key === window.utils.ESC_KEY) {
+        node.remove();
+      }
+    }, {once: true});
+
     if (button) {
       button.addEventListener('click', function () {
         node.remove();
