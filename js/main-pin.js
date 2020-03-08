@@ -10,6 +10,10 @@
   var maxWidth = document.querySelector('.map').offsetWidth;
   var address = window.form.address;
 
+  // чтобы главный пин был над другими пинами
+  mainPin.style.zIndex = '2';
+
+  // перемещение главного пина
   var dragMainPin = function (evt) {
     var startCoords = {
       x: evt.clientX,
@@ -53,6 +57,7 @@
         y: mainPin.offsetTop - shift.y
       };
 
+      // задаем границы перемещения
       if (mainPinCoordinates.y > moveArea.top && mainPinCoordinates.y < moveArea.bottom) {
         mainPin.style.top = mainPinCoordinates.y + 'px';
       }
@@ -66,9 +71,11 @@
         y: mainPinCoordinates.y + MAIN_PIN_HEIGHT,
       };
 
+      // выводим адрес в поле формы
       address.value = (pinTailCoordinates.x + ', ' + pinTailCoordinates.y);
     };
 
+    // удаление обработчиков при отпускании пина
     var onMouseUp = function (upEvt) {
       upEvt.preventDefault();
       document.removeEventListener('mousemove', onMouseMove);
@@ -79,7 +86,7 @@
     document.addEventListener('mouseup', onMouseUp);
   };
 
-
+  // экспорируемые значения
   window.mainPin = {
     element: mainPin,
     width: MAIN_PIN_WIDTH,

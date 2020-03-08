@@ -4,11 +4,13 @@
   var LOAD_URL = 'https://js.dump.academy/keksobooking/data';
   var SEND_URL = 'https://js.dump.academy/keksobooking';
   var TIMEOUT_IN_MS = 10000; // 10 сек
+  var STATUS_OK = 200;
+
   var Methods = {
     GET: 'GET',
     POST: 'POST'
   };
-  var STATUS_OK = 200;
+
   var ErrorCodes = {
     400: 'Неверный запрос',
     403: 'Доступ запрещен',

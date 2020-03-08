@@ -13,6 +13,7 @@
   var form = window.form.element;
   var address = window.form.address;
   var resetButton = window.form.reset;
+  var adverts = [];
 
   var mainPinDefaultCoords = {
     x: 570,
@@ -24,60 +25,80 @@
     var fragment = document.createDocumentFragment();
 
     for (var i = 0; i < array.length; i++) {
+      array[i].id = i;
       var pin = window.pin.render(array[i]);
       fragment.appendChild(pin);
     }
 
+    adverts = array;
     pinsBlock.appendChild(fragment);
-    addPopupCard(array);
   };
 
   // отображение карточки при нажатии на метку
-  var addPopupCard = function (array) {
-    var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    pins.forEach(function (element, index) {
-      element.addEventListener('click', function () {
-        var isElement = document.querySelector('.map__card');
-        if (isElement) {
-          isElement.remove();
-        }
-        map.insertBefore(window.card.render(array[index]), filtersContainer);
-        closePopup();
-      });
-    });
+  var showPopupCard = function (advert) {
+    var openedCard = document.querySelector('.map__card');
+    if (openedCard) {
+      openedCard.remove();
+    }
+    map.insertBefore(window.card.render(advert), filtersContainer);
+    addPopupCardListeners();
   };
 
   var onPinClick = function (evt) {
-    var isActive = map.querySelector('.map__pin--active');
+    var activePins = map.querySelectorAll('.map__pin--active');
+    var target = evt.target;
+    var isClickOnPin = target.classList.contains('map__pin:not(map__pin--main)');
+    var isClickInside = target.closest('.map__pin:not(.map__pin--main)');
+    var currentPin;
+    var isCurrentPinActive = isClickOnPin ? target.classList.contains('map__pin--active') : target.closest('.map__pin--active');
 
-    if (evt.target.matches('.map__pin:not(.map__pin--main)')) {
-      if (isActive) {
-        isActive.classList.remove('map__pin--active');
-      }
-      evt.target.classList.add('map__pin--active');
-    } else if (evt.target.matches('.map__pin:not(.map__pin--main) img')) {
-      if (isActive) {
-        isActive.classList.remove('map__pin--active');
-      }
-      evt.target.parentNode.classList.add('map__pin--active');
+    if (isClickOnPin) {
+      currentPin = target;
+    } else if (isClickInside) {
+      currentPin = isClickInside;
     }
+
+    if (!currentPin || isCurrentPinActive) {
+      return;
+    }
+
+    var pinId = +currentPin.dataset.id;
+    var advert = adverts.find(function (ad) {
+      return ad.id === pinId;
+    });
+
+    showPopupCard(advert);
+
+    activePins.forEach(function (pin) {
+      pin.classList.remove('map__pin--active');
+    });
+
+    currentPin.classList.add('map__pin--active');
   };
 
   // закрытие карточки
-  var closePopup = function () {
+  var addPopupCardListeners = function () {
     var popup = document.querySelector('.map__card');
     var popupClose = popup.querySelector('.popup__close');
 
     popupClose.addEventListener('click', function () {
-      var activePin = map.querySelector('.map__pin--active');
-      activePin.classList.remove('map__pin--active');
+      var activePins = map.querySelectorAll('.map__pin--active');
+
+      activePins.forEach(function (pin) {
+        pin.classList.remove('map__pin--active');
+      });
+
       popup.remove();
     }, {once: true});
 
     document.addEventListener('keydown', function (evt) {
       if (evt.key === window.utils.ESC_KEY) {
-        var activePin = map.querySelector('.map__pin--active');
-        activePin.classList.remove('map__pin--active');
+        var activePins = map.querySelectorAll('.map__pin--active');
+
+        activePins.forEach(function (pin) {
+          pin.classList.remove('map__pin--active');
+        });
+
         popup.remove();
       }
     }, {once: true});
@@ -107,9 +128,15 @@
 
   var removePins = function () {
     var pins = map.querySelectorAll('.map__pin:not(.map__pin--main)');
+    var openedCard = document.querySelector('.map__card');
+
     pins.forEach(function (element) {
       element.remove();
     });
+
+    if (openedCard) {
+      openedCard.remove();
+    }
   };
 
   var deactivatePage = function () {
