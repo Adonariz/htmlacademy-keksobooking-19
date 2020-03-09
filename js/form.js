@@ -13,14 +13,18 @@
   var checkInTime = form.querySelector('#timein');
   var checkOutTime = form.querySelector('#timeout');
   var formFieldsets = form.querySelectorAll('fieldset');
+  var submitButton = form.querySelector('.ad-form__submit');
+  var resetButton = form.querySelector('.ad-form__reset');
 
-  var defaultMinPrice = window.card.roomData[roomType.value].minPrice;
+  var defaultMinPrice = window.card.RoomData[roomType.value].minPrice;
 
   // валидация формы
   // дефолтные значения
-  price.setAttribute('min', defaultMinPrice);
-  price.placeholder = defaultMinPrice;
-  guestNumber.value = DEFAULT_GUEST_NUMBER;
+  var setDefaultValues = function () {
+    price.setAttribute('min', defaultMinPrice);
+    price.placeholder = defaultMinPrice;
+    guestNumber.value = DEFAULT_GUEST_NUMBER;
+  };
 
   // сочетание гостей и спальных мест
   var onRoomCapacityChange = function () {
@@ -37,7 +41,7 @@
 
   // минимальная стоимость от типа жилья
   var onRoomTypeChange = function () {
-    var minPrice = window.card.roomData[roomType.value].minPrice;
+    var minPrice = window.card.RoomData[roomType.value].minPrice;
     price.min = minPrice;
     price.placeholder = minPrice;
   };
@@ -58,10 +62,32 @@
   checkInTime.addEventListener('change', onCheckInTimeChange);
   checkOutTime.addEventListener('change', onCheckOutTimeChange);
 
+  // отправка формы
+  var successHandler = function () {
+    window.messages.success();
+    submitButton.textContent = 'Сохранить';
+    submitButton.disabled = false;
+  };
+
+  var errorHandler = function (errorMessage) {
+    window.messages.error(errorMessage);
+    submitButton.textContent = 'Сохранить';
+    submitButton.disabled = false;
+  };
+
+  var sendForm = function () {
+    window.backend.save(new FormData(form), successHandler, errorHandler);
+    submitButton.textContent = 'Данные отправляются...';
+    submitButton.disabled = true;
+  };
+
   // экспортируемые значения
   window.form = {
-    formEl: form,
-    formFieldsets: formFieldsets,
-    address: address
+    element: form,
+    fieldsets: formFieldsets,
+    address: address,
+    send: sendForm,
+    default: setDefaultValues,
+    reset: resetButton
   };
 })();

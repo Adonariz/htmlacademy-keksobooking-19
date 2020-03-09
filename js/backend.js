@@ -2,14 +2,16 @@
 
 (function () {
   var LOAD_URL = 'https://js.dump.academy/keksobooking/data';
-  // var SEND_URL = 'https://js.dump.academy/code-and-magick/';
+  var SEND_URL = 'https://js.dump.academy/keksobooking';
   var TIMEOUT_IN_MS = 10000; // 10 сек
-  var methods = {
+  var STATUS_OK = 200;
+
+  var Methods = {
     GET: 'GET',
     POST: 'POST'
   };
-  var STATUS_OK = 200;
-  var errorCodes = {
+
+  var ErrorCodes = {
     400: 'Неверный запрос',
     403: 'Доступ запрещен',
     404: 'Ничего не найдено',
@@ -27,7 +29,7 @@
       if (xhr.status === STATUS_OK) {
         onSuccess(xhr.response);
       } else {
-        var error = errorCodes[xhr.response] || 'Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText;
+        var error = ErrorCodes[xhr.status] || 'Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText;
         onError(error);
       }
     });
@@ -48,13 +50,13 @@
 
   window.backend = {
     load: function (onLoad, onError) {
-      var request = createRequest(methods.GET, LOAD_URL, onLoad, onError);
+      var request = createRequest(Methods.GET, LOAD_URL, onLoad, onError);
       request.send();
     },
 
-    // save: function (data, onLoad, onError) {
-    //   var request = createRequest(methods.POST, SEND_URL, onLoad, onError);
-    //   request.send(data);
-    // }
+    save: function (data, onLoad, onError) {
+      var request = createRequest(Methods.POST, SEND_URL, onLoad, onError);
+      request.send(data);
+    }
   };
 })();
