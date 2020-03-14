@@ -21,16 +21,18 @@
   };
 
   // создаем и вставляем фрагмент
-  var createPinsBlock = function (array) {
+  var createPinsBlock = function (data) {
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < array.length; i++) {
-      array[i].id = i;
-      var pin = window.pin.render(array[i]);
+    var filteredArray = window.filter.array(data);
+
+    for (var i = 0; i < filteredArray.length; i++) {
+      filteredArray[i].id = i;
+      var pin = window.pin.render(filteredArray[i]);
       fragment.appendChild(pin);
     }
 
-    adverts = array;
+    adverts = filteredArray;
     pinsBlock.appendChild(fragment);
   };
 
@@ -121,6 +123,10 @@
     window.utils.disableInput(mapFilters);
     window.utils.disableInput(mapFeatures);
     window.utils.disableInput(window.form.fieldsets);
+
+    mapFilters.forEach(function (filter) {
+      filter.value = window.filter.default;
+    });
   };
 
   deactivateAllInputs();
@@ -143,6 +149,16 @@
     form.reset();
     map.classList.add('map--faded');
     form.classList.add('ad-form--disabled');
+
+    map.removeEventListener('click', onPinClick);
+
+    mapFilters.forEach(function (filter) {
+      filter.removeEventListener('change', onFiltersChange);
+    });
+
+    form.removeEventListener('submit', onFormSubmit);
+    resetButton.removeEventListener('click', onResetClick);
+
     removePins();
     setDefaultPosition();
     setInitialAddress();
@@ -162,6 +178,11 @@
     form.classList.remove('ad-form--disabled');
     window.backend.load(createPinsBlock, window.messages.error);
     map.addEventListener('click', onPinClick);
+
+    mapFilters.forEach(function (filter) {
+      filter.addEventListener('change', onFiltersChange);
+    });
+
     form.addEventListener('submit', onFormSubmit);
     resetButton.addEventListener('click', onResetClick);
     activateAllInputs();
@@ -187,6 +208,11 @@
       activatePage();
       mainPin.removeEventListener('keydown', onMainPinKeydown);
     }
+  };
+
+  var onFiltersChange = function () {
+    removePins();
+    window.backend.load(createPinsBlock, window.messages.error);
   };
 
   var onFormSubmit = function (evt) {
