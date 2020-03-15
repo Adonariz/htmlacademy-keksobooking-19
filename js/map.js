@@ -9,10 +9,12 @@
   var filtersContainer = map.querySelector('.map__filters-container');
   var pinsBlock = map.querySelector('.map__pins');
   var mapFilters = map.querySelectorAll('.map__filter');
-  var mapFeatures = map.querySelectorAll('.map__features');
+  var mapFeatures = window.filter.features;
   var form = window.form.element;
   var address = window.form.address;
   var resetButton = window.form.reset;
+
+  var downloadedAdverts = [];
   var adverts = [];
 
   var mainPinDefaultCoords = {
@@ -20,19 +22,22 @@
     y: 375
   };
 
+  var getAdverts = function (data) {
+    downloadedAdverts = data;
+    return downloadedAdverts;
+  };
+
   // создаем и вставляем фрагмент
-  var createPinsBlock = function (data) {
+  var createPinsBlock = function (array) {
     var fragment = document.createDocumentFragment();
 
-    var filteredArray = window.filter.array(data);
-
-    for (var i = 0; i < filteredArray.length; i++) {
-      filteredArray[i].id = i;
-      var pin = window.pin.render(filteredArray[i]);
+    for (var i = 0; i < array.length; i++) {
+      array[i].id = i;
+      var pin = window.pin.render(array[i]);
       fragment.appendChild(pin);
     }
 
-    adverts = filteredArray;
+    adverts = array;
     pinsBlock.appendChild(fragment);
   };
 
@@ -127,6 +132,10 @@
     mapFilters.forEach(function (filter) {
       filter.value = window.filter.default;
     });
+
+    mapFeatures.forEach(function (checkbox) {
+      checkbox.checked = false;
+    });
   };
 
   deactivateAllInputs();
@@ -156,6 +165,10 @@
       filter.removeEventListener('change', onFiltersChange);
     });
 
+    mapFeatures.forEach(function (checkbox) {
+      checkbox.removeEventListener('change', onFiltersChange);
+    });
+
     form.removeEventListener('submit', onFormSubmit);
     resetButton.removeEventListener('click', onResetClick);
 
@@ -174,13 +187,17 @@
   };
 
   var activatePage = function () {
+    window.backend.load(createPinsBlock(window.filter.array(getAdverts), window.messages.error));
     map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
-    window.backend.load(createPinsBlock, window.messages.error);
     map.addEventListener('click', onPinClick);
 
     mapFilters.forEach(function (filter) {
       filter.addEventListener('change', onFiltersChange);
+    });
+
+    mapFeatures.forEach(function (checkbox) {
+      checkbox.addEventListener('change', onFiltersChange);
     });
 
     form.addEventListener('submit', onFormSubmit);
@@ -210,10 +227,10 @@
     }
   };
 
-  var onFiltersChange = function () {
+  var onFiltersChange = window.debounce(function () {
     removePins();
-    window.backend.load(createPinsBlock, window.messages.error);
-  };
+    createPinsBlock(window.filter.array(downloadedAdverts));
+  });
 
   var onFormSubmit = function (evt) {
     evt.preventDefault();
