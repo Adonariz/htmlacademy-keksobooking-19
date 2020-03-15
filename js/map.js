@@ -22,11 +22,6 @@
     y: 375
   };
 
-  var getAdverts = function (data) {
-    downloadedAdverts = data;
-    return downloadedAdverts;
-  };
-
   // создаем и вставляем фрагмент
   var createPinsBlock = function (array) {
     var fragment = document.createDocumentFragment();
@@ -186,8 +181,15 @@
     window.utils.enableInput(window.form.fieldsets);
   };
 
+  var onLoadSuccess = function (data) {
+    downloadedAdverts = data;
+    var filteredArray = window.filter.array(downloadedAdverts);
+    createPinsBlock(filteredArray);
+    return downloadedAdverts;
+  };
+
   var activatePage = function () {
-    window.backend.load(createPinsBlock(window.filter.array(getAdverts), window.messages.error));
+    window.backend.load(onLoadSuccess, window.messages.error);
     map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
     map.addEventListener('click', onPinClick);
