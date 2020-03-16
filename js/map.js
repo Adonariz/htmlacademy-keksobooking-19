@@ -7,12 +7,15 @@
   var map = document.querySelector('.map');
   var mainPin = window.mainPin.element;
   var filtersContainer = map.querySelector('.map__filters-container');
+  var filtersForm = window.filter.form;
   var pinsBlock = map.querySelector('.map__pins');
   var mapFilters = map.querySelectorAll('.map__filter');
-  var mapFeatures = map.querySelectorAll('.map__features');
+  var mapFeatures = window.filter.features;
   var form = window.form.element;
   var address = window.form.address;
   var resetButton = window.form.reset;
+
+  var downloadedAdverts = [];
   var adverts = [];
 
   var mainPinDefaultCoords = {
@@ -21,18 +24,16 @@
   };
 
   // создаем и вставляем фрагмент
-  var createPinsBlock = function (data) {
+  var createPinsBlock = function (array) {
     var fragment = document.createDocumentFragment();
 
-    var filteredArray = window.filter.array(data);
-
-    for (var i = 0; i < filteredArray.length; i++) {
-      filteredArray[i].id = i;
-      var pin = window.pin.render(filteredArray[i]);
+    for (var i = 0; i < array.length; i++) {
+      array[i].id = i;
+      var pin = window.pin.render(array[i]);
       fragment.appendChild(pin);
     }
 
-    adverts = filteredArray;
+    adverts = array;
     pinsBlock.appendChild(fragment);
   };
 
@@ -127,6 +128,10 @@
     mapFilters.forEach(function (filter) {
       filter.value = window.filter.default;
     });
+
+    mapFeatures.forEach(function (checkbox) {
+      checkbox.checked = false;
+    });
   };
 
   deactivateAllInputs();
@@ -151,11 +156,7 @@
     form.classList.add('ad-form--disabled');
 
     map.removeEventListener('click', onPinClick);
-
-    mapFilters.forEach(function (filter) {
-      filter.removeEventListener('change', onFiltersChange);
-    });
-
+    filtersForm.removeEventListener('change', onFiltersChange);
     form.removeEventListener('submit', onFormSubmit);
     resetButton.removeEventListener('click', onResetClick);
 
@@ -173,16 +174,19 @@
     window.utils.enableInput(window.form.fieldsets);
   };
 
+  var onLoadSuccess = function (data) {
+    downloadedAdverts = data;
+    var filteredArray = window.filter.array(downloadedAdverts);
+    createPinsBlock(filteredArray);
+    return downloadedAdverts;
+  };
+
   var activatePage = function () {
+    window.backend.load(onLoadSuccess, window.messages.error);
     map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
-    window.backend.load(createPinsBlock, window.messages.error);
     map.addEventListener('click', onPinClick);
-
-    mapFilters.forEach(function (filter) {
-      filter.addEventListener('change', onFiltersChange);
-    });
-
+    filtersForm.addEventListener('change', onFiltersChange);
     form.addEventListener('submit', onFormSubmit);
     resetButton.addEventListener('click', onResetClick);
     activateAllInputs();
@@ -210,10 +214,10 @@
     }
   };
 
-  var onFiltersChange = function () {
+  var onFiltersChange = window.debounce(function () {
     removePins();
-    window.backend.load(createPinsBlock, window.messages.error);
-  };
+    createPinsBlock(window.filter.array(downloadedAdverts));
+  });
 
   var onFormSubmit = function (evt) {
     evt.preventDefault();
