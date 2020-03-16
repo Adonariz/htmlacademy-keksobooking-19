@@ -7,6 +7,7 @@
   var map = document.querySelector('.map');
   var mainPin = window.mainPin.element;
   var filtersContainer = map.querySelector('.map__filters-container');
+  var filtersForm = window.filter.form;
   var pinsBlock = map.querySelector('.map__pins');
   var mapFilters = map.querySelectorAll('.map__filter');
   var mapFeatures = window.filter.features;
@@ -155,15 +156,7 @@
     form.classList.add('ad-form--disabled');
 
     map.removeEventListener('click', onPinClick);
-
-    mapFilters.forEach(function (filter) {
-      filter.removeEventListener('change', onFiltersChange);
-    });
-
-    mapFeatures.forEach(function (checkbox) {
-      checkbox.removeEventListener('change', onFiltersChange);
-    });
-
+    filtersForm.removeEventListener('change', onFiltersChange);
     form.removeEventListener('submit', onFormSubmit);
     resetButton.removeEventListener('click', onResetClick);
 
@@ -193,15 +186,7 @@
     map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
     map.addEventListener('click', onPinClick);
-
-    mapFilters.forEach(function (filter) {
-      filter.addEventListener('change', onFiltersChange);
-    });
-
-    mapFeatures.forEach(function (checkbox) {
-      checkbox.addEventListener('change', onFiltersChange);
-    });
-
+    filtersForm.addEventListener('change', onFiltersChange);
     form.addEventListener('submit', onFormSubmit);
     resetButton.addEventListener('click', onResetClick);
     activateAllInputs();
