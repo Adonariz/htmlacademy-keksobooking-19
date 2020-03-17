@@ -14,6 +14,9 @@
   var form = window.form.element;
   var address = window.form.address;
   var resetButton = window.form.reset;
+  var userAvatar = window.upload.avatar;
+  var avatarPreview = window.upload.avatarPreview;
+  var onUserAvatarChange = window.upload.set;
 
   var downloadedAdverts = [];
   var adverts = [];
@@ -152,6 +155,7 @@
 
   var deactivatePage = function () {
     form.reset();
+
     map.classList.add('map--faded');
     form.classList.add('ad-form--disabled');
 
@@ -159,12 +163,15 @@
     filtersForm.removeEventListener('change', onFiltersChange);
     form.removeEventListener('submit', onFormSubmit);
     resetButton.removeEventListener('click', onResetClick);
+    userAvatar.removeEventListener('change', onUserAvatarChange);
 
     removePins();
     setDefaultPosition();
     setInitialAddress();
     window.form.default();
     deactivateAllInputs();
+
+    avatarPreview.src = 'img/muffin-grey.svg';
   };
 
   // активируем страницу
@@ -176,19 +183,23 @@
 
   var onLoadSuccess = function (data) {
     downloadedAdverts = data;
-    var filteredArray = window.filter.array(downloadedAdverts);
+    var filteredArray = window.filter.process(downloadedAdverts);
     createPinsBlock(filteredArray);
     return downloadedAdverts;
   };
 
   var activatePage = function () {
     window.backend.load(onLoadSuccess, window.messages.error);
+
     map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
+
     map.addEventListener('click', onPinClick);
     filtersForm.addEventListener('change', onFiltersChange);
     form.addEventListener('submit', onFormSubmit);
+    userAvatar.addEventListener('change', onUserAvatarChange);
     resetButton.addEventListener('click', onResetClick);
+
     activateAllInputs();
   };
 
@@ -216,7 +227,7 @@
 
   var onFiltersChange = window.debounce(function () {
     removePins();
-    createPinsBlock(window.filter.array(downloadedAdverts));
+    createPinsBlock(window.filter.process(downloadedAdverts));
   });
 
   var onFormSubmit = function (evt) {
@@ -233,6 +244,8 @@
     form.removeEventListener('submit', onFormSubmit);
     resetButton.removeEventListener('click', onResetClick);
   };
+
+
 
   // добавляем обработчики
   mainPin.addEventListener('mousedown', onMainPinMousedown);
