@@ -125,9 +125,9 @@
 
   // деактивация страницы
   var deactivateAllInputs = function () {
-    window.utils.disableInput(mapFilters);
-    window.utils.disableInput(mapFeatures);
-    window.utils.disableInput(window.form.fieldsets);
+    window.utils.setInputAttribute(mapFilters, true);
+    window.utils.setInputAttribute(mapFeatures, true);
+    window.utils.setInputAttribute(window.form.fieldsets, true);
 
     mapFilters.forEach(function (filter) {
       filter.value = window.filter.default;
@@ -176,9 +176,9 @@
 
   // активируем страницу
   var activateAllInputs = function () {
-    window.utils.enableInput(mapFilters);
-    window.utils.enableInput(mapFeatures);
-    window.utils.enableInput(window.form.fieldsets);
+    window.utils.setInputAttribute(mapFilters);
+    window.utils.setInputAttribute(mapFeatures);
+    window.utils.setInputAttribute(window.form.fieldsets);
   };
 
   var onLoadSuccess = function (data) {

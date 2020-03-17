@@ -15,19 +15,11 @@
       return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : CASES[(number % 10 < 5) ? number % 10 : 5]];
     },
 
-    // отключение инпутов
-    disableInput: function (inputs) {
-      for (var i = 0; i < inputs.length; i++) {
-        inputs[i].setAttribute('disabled', 'true');
-      }
-    },
-
-    // включение инпутов
-    enableInput: function (inputs) {
-      for (var i = 0; i < inputs.length; i++) {
-        inputs[i].removeAttribute('disabled');
-      }
+    // управление инпутами
+    setInputAttribute: function (inputs, disable) {
+      inputs.forEach(function (input) {
+        return disable ? input.setAttribute('disabled', 'true') : input.removeAttribute('disabled');
+      });
     }
-
   };
 })();
