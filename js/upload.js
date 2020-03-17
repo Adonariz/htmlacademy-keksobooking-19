@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var DEFAULT_AVATAR = 'img/muffin-grey.svg';
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
   var ImageParams = {
     WIDTH: 70,
@@ -13,7 +14,6 @@
   var imagesUpload = document.querySelector('#images');
   var avatarPreview = document.querySelector('.ad-form-header__preview img');
   var imagesPreview = document.querySelector('.ad-form__photo');
-  var DEFAULT_AVATAR = 'img/muffin-grey.svg';
 
   var setAvatar = function () {
     var file = avatarUpload.files[0];
