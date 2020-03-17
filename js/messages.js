@@ -30,11 +30,11 @@
 
   window.messages = {
     // загрузка произошла успешно
-    success: function () {
+    showSuccess: function () {
       renderMessage(successTemplate);
     },
     // вывод ошибки
-    error: function (errorMessage) {
+    showError: function (errorMessage) {
       renderMessage(errorTemplate);
       var messageText = document.querySelector('.error__message');
       messageText.textContent = errorMessage;

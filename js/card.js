@@ -3,7 +3,7 @@
 (function () {
   var popupCardTemplate = document.querySelector('#card').content.querySelector('.popup');
 
-  var RoomData = {
+  var roomData = {
     'palace': {
       title: 'Дворец',
       minPrice: 10000
@@ -74,7 +74,7 @@
     title.textContent = advert.offer.title;
     address.textContent = advert.offer.address;
     price.textContent = advert.offer.price + '₽/ночь';
-    type.textContent = RoomData[advert.offer.type].title;
+    type.textContent = roomData[advert.offer.type].title;
 
     if (advert.offer.guests === 0) {
       capacity.textContent = advert.offer.rooms + ' ' + window.utils.pluralize(advert.offer.rooms, roomText) + ' без гостей';
@@ -90,7 +90,7 @@
   };
 
   window.card = {
-    RoomData: RoomData,
+    roomData: roomData,
     render: renderCard
   };
 })();

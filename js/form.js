@@ -16,7 +16,7 @@
   var submitButton = form.querySelector('.ad-form__submit');
   var resetButton = form.querySelector('.ad-form__reset');
 
-  var defaultMinPrice = window.card.RoomData[roomType.value].minPrice;
+  var defaultMinPrice = window.card.roomData[roomType.value].minPrice;
 
   // валидация формы
   // дефолтные значения
@@ -41,7 +41,7 @@
 
   // минимальная стоимость от типа жилья
   var onRoomTypeChange = function () {
-    var minPrice = window.card.RoomData[roomType.value].minPrice;
+    var minPrice = window.card.roomData[roomType.value].minPrice;
     price.min = minPrice;
     price.placeholder = minPrice;
   };
@@ -64,13 +64,13 @@
 
   // отправка формы
   var successHandler = function () {
-    window.messages.success();
+    window.messages.showSuccess();
     submitButton.textContent = 'Сохранить';
     submitButton.disabled = false;
   };
 
   var errorHandler = function (errorMessage) {
-    window.messages.error(errorMessage);
+    window.messages.showError(errorMessage);
     submitButton.textContent = 'Сохранить';
     submitButton.disabled = false;
   };
@@ -87,7 +87,7 @@
     fieldsets: formFieldsets,
     address: address,
     send: sendForm,
-    default: setDefaultValues,
+    setDefault: setDefaultValues,
     reset: resetButton
   };
 })();

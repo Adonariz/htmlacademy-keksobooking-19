@@ -22,20 +22,20 @@
   var downloadedAdverts = [];
   var adverts = [];
 
-  var mainPinDefaultCoords = {
-    x: 570,
-    y: 375
+  var MainPinDefaultCoords = {
+    X: 570,
+    Y: 375
   };
 
   // создаем и вставляем фрагмент
   var createPinsBlock = function (array) {
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < array.length; i++) {
-      array[i].id = i;
-      var pin = window.pin.render(array[i]);
+    array.forEach(function (item, index) {
+      item.id = index;
+      var pin = window.pin.render(item);
       fragment.appendChild(pin);
-    }
+    });
 
     adverts = array;
     pinsBlock.appendChild(fragment);
@@ -113,14 +113,14 @@
 
   // заполнение адреса
   var setInitialAddress = function () {
-    address.value = (mainPinDefaultCoords.x + Math.floor(MAIN_PIN_WIDTH / 2)) + ', ' + (mainPinDefaultCoords.y + MAIN_PIN_HEIGHT);
+    address.value = (MainPinDefaultCoords.X + Math.floor(MAIN_PIN_WIDTH / 2)) + ', ' + (MainPinDefaultCoords.Y + MAIN_PIN_HEIGHT);
   };
 
   setInitialAddress();
 
   var setDefaultPosition = function () {
-    mainPin.style.left = mainPinDefaultCoords.x + 'px';
-    mainPin.style.top = mainPinDefaultCoords.y + 'px';
+    mainPin.style.left = MainPinDefaultCoords.X + 'px';
+    mainPin.style.top = MainPinDefaultCoords.Y + 'px';
   };
 
   // деактивация страницы
@@ -139,7 +139,7 @@
   };
 
   deactivateAllInputs();
-  window.form.default();
+  window.form.setDefault();
 
   var removePins = function () {
     var pins = map.querySelectorAll('.map__pin:not(.map__pin--main)');
@@ -169,7 +169,7 @@
     removePins();
     setDefaultPosition();
     setInitialAddress();
-    window.form.default();
+    window.form.setDefault();
     window.upload.reset();
     deactivateAllInputs();
   };
@@ -189,7 +189,7 @@
   };
 
   var activatePage = function () {
-    window.backend.load(onLoadSuccess, window.messages.error);
+    window.backend.load(onLoadSuccess, window.messages.showError);
 
     map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
