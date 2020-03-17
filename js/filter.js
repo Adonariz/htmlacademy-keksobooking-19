@@ -45,24 +45,24 @@
   };
 
   var FilterRules = {
-    'housing-type': function (advert, value) {
-      return advert.offer.type === value;
+    'housing-type': function (offer, value) {
+      return offer.type === value;
     },
 
-    'housing-price': function (advert, value) {
-      return advert.offer.price >= PriceValues[value].min && advert.offer.price < PriceValues[value].max;
+    'housing-price': function (offer, value) {
+      return offer.price >= PriceValues[value].min && offer.price < PriceValues[value].max;
     },
 
-    'housing-rooms': function (advert, value) {
-      return advert.offer.rooms === parseInt(value, 10);
+    'housing-rooms': function (offer, value) {
+      return offer.rooms === parseInt(value, 10);
     },
 
-    'housing-guests': function (advert, value) {
-      return advert.offer.guests === parseInt(value, 10);
+    'housing-guests': function (offer, value) {
+      return offer.guests === parseInt(value, 10);
     },
 
-    'features': function (advert, value) {
-      return checkFeature(advert.offer.features, value);
+    'features': function (offer, value) {
+      return checkFeature(offer.features, value);
     },
   };
 
@@ -70,7 +70,7 @@
   var filterAdverts = function (array) {
     return array.filter(function (advert) {
       return advert.offer && getFilterValues().every(function (element) {
-        return (element.value === FILTER_DEFAULT_VALUE) ? true : FilterRules[element.name](advert, element.value);
+        return (element.value === FILTER_DEFAULT_VALUE) ? true : FilterRules[element.name](advert.offer, element.value);
       });
     })
     .slice(0, ADVERT_LIMIT);
@@ -81,6 +81,6 @@
     form: filtersBlock,
     features: featureItems,
     default: FILTER_DEFAULT_VALUE,
-    array: filterAdverts
+    process: filterAdverts
   };
 })();

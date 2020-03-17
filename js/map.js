@@ -14,6 +14,10 @@
   var form = window.form.element;
   var address = window.form.address;
   var resetButton = window.form.reset;
+  var userAvatar = window.upload.avatar;
+  var onUserAvatarChange = window.upload.setAvatar;
+  var imagesInput = window.upload.images;
+  var onImagesInputChange = window.upload.setImages;
 
   var downloadedAdverts = [];
   var adverts = [];
@@ -152,6 +156,7 @@
 
   var deactivatePage = function () {
     form.reset();
+
     map.classList.add('map--faded');
     form.classList.add('ad-form--disabled');
 
@@ -159,11 +164,13 @@
     filtersForm.removeEventListener('change', onFiltersChange);
     form.removeEventListener('submit', onFormSubmit);
     resetButton.removeEventListener('click', onResetClick);
+    userAvatar.removeEventListener('change', onUserAvatarChange);
 
     removePins();
     setDefaultPosition();
     setInitialAddress();
     window.form.default();
+    window.upload.reset();
     deactivateAllInputs();
   };
 
@@ -176,19 +183,24 @@
 
   var onLoadSuccess = function (data) {
     downloadedAdverts = data;
-    var filteredArray = window.filter.array(downloadedAdverts);
+    var filteredArray = window.filter.process(downloadedAdverts);
     createPinsBlock(filteredArray);
     return downloadedAdverts;
   };
 
   var activatePage = function () {
     window.backend.load(onLoadSuccess, window.messages.error);
+
     map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
+
     map.addEventListener('click', onPinClick);
     filtersForm.addEventListener('change', onFiltersChange);
     form.addEventListener('submit', onFormSubmit);
+    userAvatar.addEventListener('change', onUserAvatarChange);
     resetButton.addEventListener('click', onResetClick);
+    imagesInput.addEventListener('change', onImagesInputChange);
+
     activateAllInputs();
   };
 
@@ -216,7 +228,7 @@
 
   var onFiltersChange = window.debounce(function () {
     removePins();
-    createPinsBlock(window.filter.array(downloadedAdverts));
+    createPinsBlock(window.filter.process(downloadedAdverts));
   });
 
   var onFormSubmit = function (evt) {
