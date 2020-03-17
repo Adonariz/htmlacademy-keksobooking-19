@@ -15,8 +15,9 @@
   var address = window.form.address;
   var resetButton = window.form.reset;
   var userAvatar = window.upload.avatar;
-  var avatarPreview = window.upload.avatarPreview;
-  var onUserAvatarChange = window.upload.set;
+  var onUserAvatarChange = window.upload.setAvatar;
+  var imagesInput = window.upload.images;
+  var onImagesInputChange = window.upload.setImages;
 
   var downloadedAdverts = [];
   var adverts = [];
@@ -169,9 +170,8 @@
     setDefaultPosition();
     setInitialAddress();
     window.form.default();
+    window.upload.reset();
     deactivateAllInputs();
-
-    avatarPreview.src = 'img/muffin-grey.svg';
   };
 
   // активируем страницу
@@ -199,6 +199,7 @@
     form.addEventListener('submit', onFormSubmit);
     userAvatar.addEventListener('change', onUserAvatarChange);
     resetButton.addEventListener('click', onResetClick);
+    imagesInput.addEventListener('change', onImagesInputChange);
 
     activateAllInputs();
   };
@@ -244,8 +245,6 @@
     form.removeEventListener('submit', onFormSubmit);
     resetButton.removeEventListener('click', onResetClick);
   };
-
-
 
   // добавляем обработчики
   mainPin.addEventListener('mousedown', onMainPinMousedown);
