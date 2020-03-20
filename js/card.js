@@ -26,32 +26,41 @@
   };
 
   var renderFeatures = function (features, container) {
-    container.textContent = '';
-    var fragment = document.createDocumentFragment();
-    var featureElement = document.createElement('li');
-    featureElement.classList.add('popup__feature');
+    if (features.length > 0) {
+      container.textContent = '';
+      var fragment = document.createDocumentFragment();
+      var featureElement = document.createElement('li');
+      featureElement.classList.add('popup__feature');
 
-    features.forEach(function (element) {
-      var newFeature = featureElement.cloneNode(true);
-      var classMod = 'popup__feature--' + element;
-      newFeature.classList.add(classMod);
-      fragment.appendChild(newFeature);
-    });
+      features.forEach(function (element) {
+        var newFeature = featureElement.cloneNode(true);
+        var classMod = 'popup__feature--' + element;
+        newFeature.classList.add(classMod);
+        fragment.appendChild(newFeature);
+      });
 
-    container.appendChild(fragment);
+      container.appendChild(fragment);
+    } else {
+      container.remove();
+    }
   };
 
   var renderPhotos = function (photos, container, photo) {
-    container.textContent = '';
-    var fragment = document.createDocumentFragment();
+    if (photos.length > 0) {
+      container.textContent = '';
+      var fragment = document.createDocumentFragment();
 
-    photos.forEach(function (element) {
-      var newPhoto = photo.cloneNode(true);
-      newPhoto.src = element;
-      fragment.appendChild(newPhoto);
-    });
+      photos.forEach(function (element) {
+        var newPhoto = photo.cloneNode(true);
+        newPhoto.src = element;
+        fragment.appendChild(newPhoto);
+      });
 
-    container.appendChild(fragment);
+      container.appendChild(fragment);
+    } else {
+      container.remove();
+    }
+
   };
 
   var renderCard = function (advert) {

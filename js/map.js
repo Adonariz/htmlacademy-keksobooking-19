@@ -84,11 +84,12 @@
   };
 
   // закрытие карточки
+
   var addPopupCardListeners = function () {
     var popup = document.querySelector('.map__card');
     var popupClose = popup.querySelector('.popup__close');
 
-    popupClose.addEventListener('click', function () {
+    var onPopupCloseClick = function () {
       var activePins = map.querySelectorAll('.map__pin--active');
 
       activePins.forEach(function (pin) {
@@ -96,9 +97,11 @@
       });
 
       popup.remove();
-    }, {once: true});
+      popupClose.removeEventListener('click', onPopupCloseClick);
+      document.removeEventListener('keydown', onDocumentEscKeydown);
+    };
 
-    document.addEventListener('keydown', function (evt) {
+    var onDocumentEscKeydown = function (evt) {
       if (evt.key === window.utils.ESC_KEY) {
         var activePins = map.querySelectorAll('.map__pin--active');
 
@@ -107,8 +110,13 @@
         });
 
         popup.remove();
+        popupClose.removeEventListener('click', onPopupCloseClick);
+        document.removeEventListener('keydown', onDocumentEscKeydown);
       }
-    }, {once: true});
+    };
+
+    popupClose.addEventListener('click', onPopupCloseClick);
+    document.addEventListener('keydown', onDocumentEscKeydown);
   };
 
   // заполнение адреса
@@ -175,16 +183,12 @@
   };
 
   // активируем страницу
-  var activateAllInputs = function () {
-    window.utils.setInputAttribute(mapFilters);
-    window.utils.setInputAttribute(mapFeatures);
-    window.utils.setInputAttribute(window.form.fieldsets);
-  };
-
   var onLoadSuccess = function (data) {
     downloadedAdverts = data;
     var filteredArray = window.filter.process(downloadedAdverts);
     createPinsBlock(filteredArray);
+    window.utils.setInputAttribute(mapFilters);
+    window.utils.setInputAttribute(mapFeatures);
     return downloadedAdverts;
   };
 
@@ -201,7 +205,7 @@
     resetButton.addEventListener('click', onResetClick);
     imagesInput.addEventListener('change', onImagesInputChange);
 
-    activateAllInputs();
+    window.utils.setInputAttribute(window.form.fieldsets);
   };
 
   // управление меткой
