@@ -100,8 +100,8 @@
   var removeFormListeners = function () {
     form.removeEventListener('invalid', onFormInvalid, true);
     title.removeEventListener('input', onTitleInput);
-    roomNumber.removeEventListener('change', onRoomCapacityInput);
-    guestNumber.removeEventListener('change', onRoomCapacityInput);
+    roomNumber.removeEventListener('input', onRoomCapacityInput);
+    guestNumber.removeEventListener('input', onRoomCapacityInput);
     roomType.removeEventListener('change', onRoomTypeChange);
     price.removeEventListener('input', onPriceInput);
     checkInTime.removeEventListener('change', onCheckInTimeChange);
