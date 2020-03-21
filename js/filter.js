@@ -77,12 +77,10 @@
         return (element.value === FILTER_DEFAULT_VALUE) ? true : filterRules[element.name](advert.offer, element.value);
       });
 
-      if (isOfferMatch) {
+      if (isOfferMatch && filteredAdverts.length < ADVERT_LIMIT) {
         filteredAdverts.push(advert);
-
-        if (filteredAdverts.length === ADVERT_LIMIT) {
-          break;
-        }
+      } else {
+        break;
       }
     }
 
