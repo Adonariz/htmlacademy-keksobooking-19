@@ -73,9 +73,11 @@
     for (var i = 0; i < array.length; i++) {
       var advert = array[i];
 
-      if (advert.offer && getFilterValues().every(function (element) {
+      var isOfferMatch = advert.offer && getFilterValues().every(function (element) {
         return (element.value === FILTER_DEFAULT_VALUE) ? true : filterRules[element.name](advert.offer, element.value);
-      })) {
+      });
+
+      if (isOfferMatch) {
         filteredAdverts.push(advert);
 
         if (filteredAdverts.length === ADVERT_LIMIT) {
