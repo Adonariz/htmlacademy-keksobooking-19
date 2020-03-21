@@ -74,12 +74,14 @@
       var advert = array[i];
 
       var isOfferMatch = advert.offer && getFilterValues().every(function (element) {
-        return (element.value === FILTER_DEFAULT_VALUE) ? true : filterRules[element.name](advert.offer, element.value);
+        return element.value === FILTER_DEFAULT_VALUE || filterRules[element.name](advert.offer, element.value);
       });
 
-      if (isOfferMatch && filteredAdverts.length < ADVERT_LIMIT) {
+      if (isOfferMatch) {
         filteredAdverts.push(advert);
-      } else {
+      }
+
+      if (filteredAdverts.length === ADVERT_LIMIT) {
         break;
       }
     }
