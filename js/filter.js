@@ -7,7 +7,7 @@
   var filtersBlock = document.querySelector('.map__filters');
   var featureItems = filtersBlock.querySelectorAll('input[type=checkbox]');
 
-  var PriceValues = {
+  var priceValues = {
     'low': {
       min: 0,
       max: 10000
@@ -44,13 +44,13 @@
     });
   };
 
-  var FilterRules = {
+  var filterRules = {
     'housing-type': function (offer, value) {
       return offer.type === value;
     },
 
     'housing-price': function (offer, value) {
-      return offer.price >= PriceValues[value].min && offer.price < PriceValues[value].max;
+      return offer.price >= priceValues[value].min && offer.price < priceValues[value].max;
     },
 
     'housing-rooms': function (offer, value) {
@@ -67,13 +67,26 @@
   };
 
   // фильтруем массив
+
   var filterAdverts = function (array) {
-    return array.filter(function (advert) {
-      return advert.offer && getFilterValues().every(function (element) {
-        return (element.value === FILTER_DEFAULT_VALUE) ? true : FilterRules[element.name](advert.offer, element.value);
+    var filteredAdverts = [];
+    for (var i = 0; i < array.length; i++) {
+      var advert = array[i];
+
+      var isOfferMatch = advert.offer && getFilterValues().every(function (element) {
+        return (element.value === FILTER_DEFAULT_VALUE) ? true : filterRules[element.name](advert.offer, element.value);
       });
-    })
-    .slice(0, ADVERT_LIMIT);
+
+      if (isOfferMatch) {
+        filteredAdverts.push(advert);
+
+        if (filteredAdverts.length === ADVERT_LIMIT) {
+          break;
+        }
+      }
+    }
+
+    return filteredAdverts;
   };
 
   // экспорт значений

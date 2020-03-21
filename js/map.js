@@ -22,20 +22,20 @@
   var downloadedAdverts = [];
   var adverts = [];
 
-  var mainPinDefaultCoords = {
-    x: 570,
-    y: 375
+  var MainPinDefaultCoords = {
+    X: 570,
+    Y: 375
   };
 
   // создаем и вставляем фрагмент
   var createPinsBlock = function (array) {
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < array.length; i++) {
-      array[i].id = i;
-      var pin = window.pin.render(array[i]);
+    array.forEach(function (item, index) {
+      item.id = index;
+      var pin = window.pin.render(item);
       fragment.appendChild(pin);
-    }
+    });
 
     adverts = array;
     pinsBlock.appendChild(fragment);
@@ -84,11 +84,12 @@
   };
 
   // закрытие карточки
+
   var addPopupCardListeners = function () {
     var popup = document.querySelector('.map__card');
     var popupClose = popup.querySelector('.popup__close');
 
-    popupClose.addEventListener('click', function () {
+    var onPopupCloseClick = function () {
       var activePins = map.querySelectorAll('.map__pin--active');
 
       activePins.forEach(function (pin) {
@@ -96,38 +97,31 @@
       });
 
       popup.remove();
-    }, {once: true});
+      popupClose.removeEventListener('click', onPopupCloseClick);
+      document.removeEventListener('keydown', onDocumentEscKeydown);
+    };
 
-    document.addEventListener('keydown', function (evt) {
-      if (evt.key === window.utils.ESC_KEY) {
-        var activePins = map.querySelectorAll('.map__pin--active');
-
-        activePins.forEach(function (pin) {
-          pin.classList.remove('map__pin--active');
-        });
-
-        popup.remove();
-      }
-    }, {once: true});
+    popupClose.addEventListener('click', onPopupCloseClick);
+    document.addEventListener('keydown', onDocumentEscKeydown);
   };
 
   // заполнение адреса
   var setInitialAddress = function () {
-    address.value = (mainPinDefaultCoords.x + Math.floor(MAIN_PIN_WIDTH / 2)) + ', ' + (mainPinDefaultCoords.y + MAIN_PIN_HEIGHT);
+    address.value = (MainPinDefaultCoords.X + Math.floor(MAIN_PIN_WIDTH / 2)) + ', ' + (MainPinDefaultCoords.Y + MAIN_PIN_HEIGHT);
   };
 
   setInitialAddress();
 
   var setDefaultPosition = function () {
-    mainPin.style.left = mainPinDefaultCoords.x + 'px';
-    mainPin.style.top = mainPinDefaultCoords.y + 'px';
+    mainPin.style.left = MainPinDefaultCoords.X + 'px';
+    mainPin.style.top = MainPinDefaultCoords.Y + 'px';
   };
 
   // деактивация страницы
   var deactivateAllInputs = function () {
-    window.utils.disableInput(mapFilters);
-    window.utils.disableInput(mapFeatures);
-    window.utils.disableInput(window.form.fieldsets);
+    window.utils.setInputAttribute(mapFilters, true);
+    window.utils.setInputAttribute(mapFeatures, true);
+    window.utils.setInputAttribute(window.form.fieldsets, true);
 
     mapFilters.forEach(function (filter) {
       filter.value = window.filter.default;
@@ -139,7 +133,7 @@
   };
 
   deactivateAllInputs();
-  window.form.default();
+  window.form.setDefault();
 
   var removePins = function () {
     var pins = map.querySelectorAll('.map__pin:not(.map__pin--main)');
@@ -152,6 +146,8 @@
     if (openedCard) {
       openedCard.remove();
     }
+
+    document.removeEventListener('keydown', onDocumentEscKeydown);
   };
 
   var deactivatePage = function () {
@@ -169,27 +165,24 @@
     removePins();
     setDefaultPosition();
     setInitialAddress();
-    window.form.default();
+    window.form.setDefault();
+    window.form.removeListeners();
     window.upload.reset();
     deactivateAllInputs();
   };
 
   // активируем страницу
-  var activateAllInputs = function () {
-    window.utils.enableInput(mapFilters);
-    window.utils.enableInput(mapFeatures);
-    window.utils.enableInput(window.form.fieldsets);
-  };
-
   var onLoadSuccess = function (data) {
     downloadedAdverts = data;
     var filteredArray = window.filter.process(downloadedAdverts);
     createPinsBlock(filteredArray);
+    window.utils.setInputAttribute(mapFilters);
+    window.utils.setInputAttribute(mapFeatures);
     return downloadedAdverts;
   };
 
   var activatePage = function () {
-    window.backend.load(onLoadSuccess, window.messages.error);
+    window.backend.load(onLoadSuccess, window.messages.showError);
 
     map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
@@ -201,7 +194,8 @@
     resetButton.addEventListener('click', onResetClick);
     imagesInput.addEventListener('change', onImagesInputChange);
 
-    activateAllInputs();
+    window.utils.setInputAttribute(window.form.fieldsets);
+    window.form.addListeners();
   };
 
   // управление меткой
@@ -223,6 +217,21 @@
     if (evt.key === window.utils.ENTER_KEY) {
       activatePage();
       mainPin.removeEventListener('keydown', onMainPinKeydown);
+    }
+  };
+
+  var onDocumentEscKeydown = function (evt) {
+    var popup = document.querySelector('.map__card');
+
+    if (evt.key === window.utils.ESC_KEY) {
+      var activePins = map.querySelectorAll('.map__pin--active');
+
+      activePins.forEach(function (pin) {
+        pin.classList.remove('map__pin--active');
+      });
+
+      popup.remove();
+      document.removeEventListener('keydown', onDocumentEscKeydown);
     }
   };
 
