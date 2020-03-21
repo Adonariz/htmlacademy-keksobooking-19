@@ -166,6 +166,7 @@
     setDefaultPosition();
     setInitialAddress();
     window.form.setDefault();
+    window.form.removeListeners();
     window.upload.reset();
     deactivateAllInputs();
   };
@@ -194,6 +195,7 @@
     imagesInput.addEventListener('change', onImagesInputChange);
 
     window.utils.setInputAttribute(window.form.fieldsets);
+    window.form.addListeners();
   };
 
   // управление меткой
@@ -240,7 +242,6 @@
 
   var onFormSubmit = function (evt) {
     evt.preventDefault();
-    window.form.checkValidity();
     window.form.send();
     deactivatePage();
     form.removeEventListener('submit', onFormSubmit);

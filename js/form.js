@@ -26,6 +26,18 @@
     price.setAttribute('min', defaultMinPrice);
     price.placeholder = defaultMinPrice;
     guestNumber.value = DEFAULT_GUEST_NUMBER;
+    title.removeAttribute('style');
+    price.removeAttribute('style');
+    guestNumber.removeAttribute('style');
+  };
+
+  // заголовок
+  var onTitleInput = function () {
+    title.removeAttribute('style');
+
+    if (title.validity.valueMissing || title.validity.tooShort) {
+      title.style.borderColor = INVALID_COLOR;
+    }
   };
 
   // сочетание гостей и спальных мест
@@ -51,6 +63,15 @@
     price.placeholder = minPrice;
   };
 
+  // проверка цены
+  var onPriceInput = function () {
+    price.removeAttribute('style');
+
+    if (price.validity.rangeUnderflow || price.validity.rangeOverflow || price.validity.valueMissing) {
+      price.style.borderColor = INVALID_COLOR;
+    }
+  };
+
   // синхронизация времени
   var onCheckInTimeChange = function () {
     checkOutTime.value = checkInTime.value;
@@ -60,12 +81,33 @@
     checkInTime.value = checkOutTime.value;
   };
 
+  // подсветка невалидных полей
+  var onFormInvalid = function (evt) {
+    evt.target.style.borderColor = INVALID_COLOR;
+  };
+
   // обработчики событий
-  roomNumber.addEventListener('change', onRoomCapacityChange);
-  guestNumber.addEventListener('change', onRoomCapacityChange);
-  roomType.addEventListener('change', onRoomTypeChange);
-  checkInTime.addEventListener('change', onCheckInTimeChange);
-  checkOutTime.addEventListener('change', onCheckOutTimeChange);
+  var addFormListeners = function () {
+    form.addEventListener('invalid', onFormInvalid, true);
+    title.addEventListener('input', onTitleInput);
+    roomNumber.addEventListener('change', onRoomCapacityChange);
+    guestNumber.addEventListener('change', onRoomCapacityChange);
+    roomType.addEventListener('change', onRoomTypeChange);
+    price.addEventListener('input', onPriceInput);
+    checkInTime.addEventListener('change', onCheckInTimeChange);
+    checkOutTime.addEventListener('change', onCheckOutTimeChange);
+  };
+
+  var removeFormListeners = function () {
+    form.removeEventListener('invalid', onFormInvalid, true);
+    title.removeEventListener('input', onTitleInput);
+    roomNumber.removeEventListener('change', onRoomCapacityChange);
+    guestNumber.removeEventListener('change', onRoomCapacityChange);
+    roomType.removeEventListener('change', onRoomTypeChange);
+    price.removeEventListener('input', onPriceInput);
+    checkInTime.removeEventListener('change', onCheckInTimeChange);
+    checkOutTime.removeEventListener('change', onCheckOutTimeChange);
+  };
 
   // отправка формы
   var successHandler = function () {
@@ -86,15 +128,6 @@
     submitButton.disabled = true;
   };
 
-  var checkValidity = function () {
-    console.log('Проверяем валидность');
-    if (title.validity.valueMissing || title.validity.tooShort) {
-      title.style.borderColor = INVALID_COLOR;
-    }
-  };
-
-  form.addEventListener('invalid', checkValidity);
-
   // экспортируемые значения
   window.form = {
     element: form,
@@ -103,6 +136,7 @@
     send: sendForm,
     setDefault: setDefaultValues,
     reset: resetButton,
-    checkValidity: checkValidity
+    addListeners: addFormListeners,
+    removeListeners: removeFormListeners
   };
 })();
