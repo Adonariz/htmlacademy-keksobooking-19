@@ -3,8 +3,10 @@
 (function () {
   var DEFAULT_GUEST_NUMBER = 1;
   var MAX_ROOMS = '100';
+  var INVALID_COLOR = 'red';
 
   var form = document.querySelector('.ad-form');
+  var title = form.querySelector('#title');
   var address = form.querySelector('#address');
   var roomNumber = form.querySelector('#room_number');
   var guestNumber = form.querySelector('#capacity');
@@ -29,13 +31,16 @@
   // сочетание гостей и спальных мест
   var onRoomCapacityChange = function () {
     guestNumber.setCustomValidity('');
+    guestNumber.removeAttribute('style');
 
     if (roomNumber.value < guestNumber.value) {
       guestNumber.setCustomValidity('Все не уместятся! Выбери жилье повместительнее!');
+      guestNumber.style.borderColor = INVALID_COLOR;
     }
 
     if (roomNumber.value === MAX_ROOMS && guestNumber.value !== '0') {
       guestNumber.setCustomValidity('Здесь лишним гостям не будут рады');
+      guestNumber.style.borderColor = INVALID_COLOR;
     }
   };
 
@@ -81,6 +86,15 @@
     submitButton.disabled = true;
   };
 
+  var checkValidity = function () {
+    console.log('Проверяем валидность');
+    if (title.validity.valueMissing || title.validity.tooShort) {
+      title.style.borderColor = INVALID_COLOR;
+    }
+  };
+
+  form.addEventListener('invalid', checkValidity);
+
   // экспортируемые значения
   window.form = {
     element: form,
@@ -88,6 +102,7 @@
     address: address,
     send: sendForm,
     setDefault: setDefaultValues,
-    reset: resetButton
+    reset: resetButton,
+    checkValidity: checkValidity
   };
 })();

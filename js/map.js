@@ -101,20 +101,6 @@
       document.removeEventListener('keydown', onDocumentEscKeydown);
     };
 
-    var onDocumentEscKeydown = function (evt) {
-      if (evt.key === window.utils.ESC_KEY) {
-        var activePins = map.querySelectorAll('.map__pin--active');
-
-        activePins.forEach(function (pin) {
-          pin.classList.remove('map__pin--active');
-        });
-
-        popup.remove();
-        popupClose.removeEventListener('click', onPopupCloseClick);
-        document.removeEventListener('keydown', onDocumentEscKeydown);
-      }
-    };
-
     popupClose.addEventListener('click', onPopupCloseClick);
     document.addEventListener('keydown', onDocumentEscKeydown);
   };
@@ -160,6 +146,8 @@
     if (openedCard) {
       openedCard.remove();
     }
+
+    document.removeEventListener('keydown', onDocumentEscKeydown);
   };
 
   var deactivatePage = function () {
@@ -230,6 +218,21 @@
     }
   };
 
+  var onDocumentEscKeydown = function (evt) {
+    var popup = document.querySelector('.map__card');
+
+    if (evt.key === window.utils.ESC_KEY) {
+      var activePins = map.querySelectorAll('.map__pin--active');
+
+      activePins.forEach(function (pin) {
+        pin.classList.remove('map__pin--active');
+      });
+
+      popup.remove();
+      document.removeEventListener('keydown', onDocumentEscKeydown);
+    }
+  };
+
   var onFiltersChange = window.debounce(function () {
     removePins();
     createPinsBlock(window.filter.process(downloadedAdverts));
@@ -237,6 +240,7 @@
 
   var onFormSubmit = function (evt) {
     evt.preventDefault();
+    window.form.checkValidity();
     window.form.send();
     deactivatePage();
     form.removeEventListener('submit', onFormSubmit);
