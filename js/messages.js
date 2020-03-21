@@ -9,20 +9,41 @@
     var main = document.querySelector('main');
     var button = node.querySelector('button');
 
-    document.addEventListener('click', function () {
-      node.remove();
-    }, {once: true});
+    node.classList.add('message');
 
-    document.addEventListener('keydown', function (evt) {
+    var onDocumentClick = function (evt) {
+      var target = evt.target;
+      var isClickOnMessage = target.classList.contains('message');
+      var isClickInside = target.closest('.message');
+      if (isClickOnMessage || isClickInside) {
+        node.remove();
+        document.removeEventListener('click', onDocumentClick);
+        document.removeEventListener('keydown', onDocumentEscKeydown);
+        button.removeEventListener('click', onButtonClick);
+      }
+    };
+
+    var onDocumentEscKeydown = function (evt) {
       if (evt.key === window.utils.ESC_KEY) {
         node.remove();
+        document.removeEventListener('click', onDocumentClick);
+        document.removeEventListener('keydown', onDocumentEscKeydown);
+        button.removeEventListener('click', onButtonClick);
       }
-    }, {once: true});
+    };
+
+    var onButtonClick = function () {
+      node.remove();
+      document.removeEventListener('click', onDocumentClick);
+      document.removeEventListener('keydown', onDocumentEscKeydown);
+      button.removeEventListener('click', onButtonClick);
+    };
+
+    document.addEventListener('click', onDocumentClick);
+    document.addEventListener('keydown', onDocumentEscKeydown);
 
     if (button) {
-      button.addEventListener('click', function () {
-        node.remove();
-      }, {once: true});
+      button.addEventListener('click', onButtonClick);
     }
 
     main.appendChild(node);
@@ -30,11 +51,11 @@
 
   window.messages = {
     // загрузка произошла успешно
-    success: function () {
+    showSuccess: function () {
       renderMessage(successTemplate);
     },
     // вывод ошибки
-    error: function (errorMessage) {
+    showError: function (errorMessage) {
       renderMessage(errorTemplate);
       var messageText = document.querySelector('.error__message');
       messageText.textContent = errorMessage;
