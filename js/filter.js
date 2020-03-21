@@ -67,13 +67,24 @@
   };
 
   // фильтруем массив
+
   var filterAdverts = function (array) {
-    return array.filter(function (advert) {
-      return advert.offer && getFilterValues().every(function (element) {
+    var filteredAdverts = [];
+    for (var i = 0; i < array.length; i++) {
+      var advert = array[i];
+
+      if (advert.offer && getFilterValues().every(function (element) {
         return (element.value === FILTER_DEFAULT_VALUE) ? true : filterRules[element.name](advert.offer, element.value);
-      });
-    })
-    .slice(0, ADVERT_LIMIT);
+      })) {
+        filteredAdverts.push(advert);
+
+        if (filteredAdverts.length === ADVERT_LIMIT) {
+          break;
+        }
+      }
+    }
+
+    return filteredAdverts;
   };
 
   // экспорт значений
