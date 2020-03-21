@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var DEFAULT_GUEST_NUMBER = 1;
   var MAX_ROOMS = '100';
   var INVALID_COLOR = 'red';
 
@@ -25,7 +24,7 @@
   var setDefaultValues = function () {
     price.setAttribute('min', defaultMinPrice);
     price.placeholder = defaultMinPrice;
-    guestNumber.value = DEFAULT_GUEST_NUMBER;
+    guestNumber.setCustomValidity('');
     title.removeAttribute('style');
     price.removeAttribute('style');
     guestNumber.removeAttribute('style');
@@ -41,7 +40,7 @@
   };
 
   // сочетание гостей и спальных мест
-  var onRoomCapacityChange = function () {
+  var onRoomCapacityInput = function () {
     guestNumber.setCustomValidity('');
     guestNumber.removeAttribute('style');
 
@@ -90,8 +89,8 @@
   var addFormListeners = function () {
     form.addEventListener('invalid', onFormInvalid, true);
     title.addEventListener('input', onTitleInput);
-    roomNumber.addEventListener('change', onRoomCapacityChange);
-    guestNumber.addEventListener('change', onRoomCapacityChange);
+    roomNumber.addEventListener('input', onRoomCapacityInput);
+    guestNumber.addEventListener('input', onRoomCapacityInput);
     roomType.addEventListener('change', onRoomTypeChange);
     price.addEventListener('input', onPriceInput);
     checkInTime.addEventListener('change', onCheckInTimeChange);
@@ -101,8 +100,8 @@
   var removeFormListeners = function () {
     form.removeEventListener('invalid', onFormInvalid, true);
     title.removeEventListener('input', onTitleInput);
-    roomNumber.removeEventListener('change', onRoomCapacityChange);
-    guestNumber.removeEventListener('change', onRoomCapacityChange);
+    roomNumber.removeEventListener('change', onRoomCapacityInput);
+    guestNumber.removeEventListener('change', onRoomCapacityInput);
     roomType.removeEventListener('change', onRoomTypeChange);
     price.removeEventListener('input', onPriceInput);
     checkInTime.removeEventListener('change', onCheckInTimeChange);
