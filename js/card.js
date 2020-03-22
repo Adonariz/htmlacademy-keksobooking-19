@@ -26,7 +26,7 @@
   };
 
   var renderFeatures = function (features, container) {
-    if (features.length > 0) {
+    if (features.length > 0 && features !== undefined) {
       container.textContent = '';
       var fragment = document.createDocumentFragment();
       var featureElement = document.createElement('li');
@@ -46,7 +46,7 @@
   };
 
   var renderPhotos = function (photos, container, photo) {
-    if (photos.length > 0) {
+    if (photos.length > 0 && photos !== undefined) {
       container.textContent = '';
       var fragment = document.createDocumentFragment();
 
@@ -80,19 +80,55 @@
     var guestText = ['гостя', 'гостей', 'гостей'];
 
     avatar.src = advert.author.avatar;
-    title.textContent = advert.offer.title;
-    address.textContent = advert.offer.address;
-    price.textContent = advert.offer.price + '₽/ночь';
-    type.textContent = roomData[advert.offer.type].title;
 
-    if (advert.offer.guests === 0) {
-      capacity.textContent = advert.offer.rooms + ' ' + window.utils.pluralize(advert.offer.rooms, roomText) + ' без гостей';
+    if (advert.offer.title !== undefined) {
+      title.textContent = advert.offer.title;
+    } else {
+      title.remove();
     }
 
-    capacity.textContent = advert.offer.rooms + ' ' + window.utils.pluralize(advert.offer.rooms, roomText) + ' для ' + advert.offer.guests + ' ' + window.utils.pluralize(advert.offer.guests, guestText);
-    time.textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
+    if (advert.offer.address !== undefined) {
+      address.textContent = advert.offer.address;
+    } else {
+      address.remove();
+    }
+
+    if (advert.offer.price !== undefined) {
+      price.textContent = advert.offer.price + '₽/ночь';
+    } else {
+      price.remove();
+    }
+
+    if (advert.offer.type !== undefined) {
+      type.textContent = roomData[advert.offer.type].title;
+    } else {
+      type.remove();
+    }
+
+    if (advert.offer.guests !== undefined) {
+      if (advert.offer.guests === 0) {
+        capacity.textContent = advert.offer.rooms + ' ' + window.utils.pluralize(advert.offer.rooms, roomText) + ' без гостей';
+      } else {
+        capacity.textContent = advert.offer.rooms + ' ' + window.utils.pluralize(advert.offer.rooms, roomText) + ' для ' + advert.offer.guests + ' ' + window.utils.pluralize(advert.offer.guests, guestText);
+      }
+    } else {
+      capacity.remove();
+    }
+
+    if (advert.offer.checkin !== undefined && advert.offer.checkout !== undefined) {
+      time.textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
+    } else {
+      time.remove();
+    }
+
     renderFeatures(advert.offer.features, featuresBlock);
-    description.textContent = advert.offer.description;
+
+    if (advert.offer.description !== undefined) {
+      description.textContent = advert.offer.description;
+    } else {
+      description.remove();
+    }
+
     renderPhotos(advert.offer.photos, photos, photo);
 
     return сard;
