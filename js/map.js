@@ -261,3 +261,4 @@
   mainPin.addEventListener('mousedown', onMainPinMousedown);
   mainPin.addEventListener('keydown', onMainPinKeydown);
 })();
+
