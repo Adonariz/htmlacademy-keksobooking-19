@@ -25,8 +25,52 @@
     },
   };
 
+  var renderInfo = function (item, container) {
+    if (item !== undefined) {
+      container.textContent = item;
+    } else {
+      container.remove();
+    }
+  };
+
+  var renderPrice = function (price, container) {
+    if (price !== undefined) {
+      container.textContent = price + '₽/ночь';
+    } else {
+      container.remove();
+    }
+  };
+
+  var renderType = function (type, container) {
+    if (type !== undefined) {
+      container.textContent = roomData[type].title;
+    } else {
+      container.remove();
+    }
+  };
+
+  var renderCapacity = function (guests, rooms, container, roomText, guestText) {
+    if (guests !== undefined) {
+      if (guests === 0) {
+        container.textContent = rooms + ' ' + window.utils.pluralize(rooms, roomText) + ' без гостей';
+      } else {
+        container.textContent = rooms + ' ' + window.utils.pluralize(rooms, roomText) + ' для ' + guests + ' ' + window.utils.pluralize(guests, guestText);
+      }
+    } else {
+      container.remove();
+    }
+  };
+
+  var renderTime = function (checkin, checkout, container) {
+    if (checkin !== undefined && checkout !== undefined) {
+      container.textContent = 'Заезд после ' + checkin + ', выезд до ' + checkout;
+    } else {
+      container.remove();
+    }
+  };
+
   var renderFeatures = function (features, container) {
-    if (features.length > 0) {
+    if (features.length > 0 && features !== undefined) {
       container.textContent = '';
       var fragment = document.createDocumentFragment();
       var featureElement = document.createElement('li');
@@ -46,7 +90,7 @@
   };
 
   var renderPhotos = function (photos, container, photo) {
-    if (photos.length > 0) {
+    if (photos.length > 0 && photos !== undefined) {
       container.textContent = '';
       var fragment = document.createDocumentFragment();
 
@@ -80,19 +124,14 @@
     var guestText = ['гостя', 'гостей', 'гостей'];
 
     avatar.src = advert.author.avatar;
-    title.textContent = advert.offer.title;
-    address.textContent = advert.offer.address;
-    price.textContent = advert.offer.price + '₽/ночь';
-    type.textContent = roomData[advert.offer.type].title;
-
-    if (advert.offer.guests === 0) {
-      capacity.textContent = advert.offer.rooms + ' ' + window.utils.pluralize(advert.offer.rooms, roomText) + ' без гостей';
-    }
-
-    capacity.textContent = advert.offer.rooms + ' ' + window.utils.pluralize(advert.offer.rooms, roomText) + ' для ' + advert.offer.guests + ' ' + window.utils.pluralize(advert.offer.guests, guestText);
-    time.textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
+    renderInfo(advert.offer.title, title);
+    renderInfo(advert.offer.address, address);
+    renderPrice(advert.offer.price, price);
+    renderType(advert.offer.type, type);
+    renderCapacity(advert.offer.guests, advert.offer.rooms, capacity, roomText, guestText);
+    renderTime(advert.offer.checkin, advert.offer.checkout, time);
     renderFeatures(advert.offer.features, featuresBlock);
-    description.textContent = advert.offer.description;
+    renderInfo(advert.offer.description, description);
     renderPhotos(advert.offer.photos, photos, photo);
 
     return сard;

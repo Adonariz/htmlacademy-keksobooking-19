@@ -32,9 +32,11 @@
     var fragment = document.createDocumentFragment();
 
     array.forEach(function (item, index) {
-      item.id = index;
-      var pin = window.pin.render(item);
-      fragment.appendChild(pin);
+      if (item.offer !== undefined) {
+        item.id = index;
+        var pin = window.pin.render(item);
+        fragment.appendChild(pin);
+      }
     });
 
     adverts = array;
