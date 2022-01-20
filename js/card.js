@@ -19,9 +19,14 @@
       minPrice: 5000
     },
 
-    'bungalo': {
+    'bungalow': {
       title: 'Бунгало',
       minPrice: 0
+    },
+
+    'hotel': {
+      title: 'Отель',
+      minPrice: 5000
     },
   };
 
@@ -70,7 +75,7 @@
   };
 
   var renderFeatures = function (features, container) {
-    if (features.length > 0 && features !== undefined) {
+    if (features !== undefined && features.length > 0) {
       container.textContent = '';
       var fragment = document.createDocumentFragment();
       var featureElement = document.createElement('li');
@@ -90,7 +95,7 @@
   };
 
   var renderPhotos = function (photos, container, photo) {
-    if (photos.length > 0 && photos !== undefined) {
+    if (photos !== undefined && photos.length > 0) {
       container.textContent = '';
       var fragment = document.createDocumentFragment();
 

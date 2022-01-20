@@ -39,9 +39,11 @@
   };
 
   var checkFeature = function (features, value) {
-    return features.some(function (feature) {
-      return feature === value;
-    });
+    if (features !== undefined) {
+      return features.some(function (feature) {
+        return feature === value;
+      });
+    }
   };
 
   var filterRules = {

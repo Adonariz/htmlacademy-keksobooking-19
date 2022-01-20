@@ -14,8 +14,8 @@
       pin.dataset.id = advert.id;
       pinImg.src = advert.author.avatar;
       pinImg.alt = advert.offer.title;
-      pin.style.left = (advert.location.x - PIN_WIDTH / 2) + 'px';
-      pin.style.top = (advert.location.y - PIN_HEIGHT) + 'px';
+      pin.style.left = (advert.location.lat - PIN_WIDTH / 2) + 'px';
+      pin.style.top = (advert.location.lng - PIN_HEIGHT) + 'px';
 
       return pin;
     }
